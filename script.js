@@ -66,40 +66,58 @@ if (archiveToggle) {
 }
 
 if (listenPlayer && listenAudio) {
+  const activateListenItem = (item, shouldPlay = true) => {
+    const src = item.dataset.src;
+    const youtube = item.dataset.youtube;
+    const label = item.querySelector("strong").textContent.trim();
+    const ep = item.querySelector("span").textContent.trim();
+
+    if (!src) return;
+
+    listenItems.forEach((button) => {
+      button.classList.remove("is-active");
+      button.removeAttribute("aria-current");
+    });
+
+    item.classList.add("is-active");
+    item.setAttribute("aria-current", "true");
+
+    listenAudio.src = src;
+
+    if (shouldPlay) {
+      listenAudio.play().catch(() => {});
+    }
+
+    if (listenYoutubeLink && youtube) {
+      listenYoutubeLink.href = youtube;
+    }
+
+    if (listenCurrent) {
+      listenCurrent.textContent = `${ep} ${label}`;
+    }
+
+    listenPlayer.classList.remove("is-open");
+
+    if (listenToggle) {
+      listenToggle.setAttribute("aria-expanded", "false");
+    }
+  };
+
   listenItems.forEach((item) => {
     item.addEventListener("click", () => {
-      const src = item.dataset.src;
-      const youtube = item.dataset.youtube;
-      const label = item.querySelector("strong").textContent.trim();
-      const ep = item.querySelector("span").textContent.trim();
-
-      if (!src) return;
-
-      listenItems.forEach((button) => {
-        button.classList.remove("is-active");
-        button.removeAttribute("aria-current");
-      });
-
-      item.classList.add("is-active");
-      item.setAttribute("aria-current", "true");
-
-      listenAudio.src = src;
-      listenAudio.play();
-
-      if (listenYoutubeLink && youtube) {
-        listenYoutubeLink.href = youtube;
-      }
-
-      if (listenCurrent) {
-        listenCurrent.textContent = `${ep} ${label}`;
-      }
-
-      listenPlayer.classList.remove("is-open");
-
-      if (listenToggle) {
-        listenToggle.setAttribute("aria-expanded", "false");
-      }
+      activateListenItem(item);
     });
+  });
+
+  listenAudio.addEventListener("ended", () => {
+    const currentIndex = Array.from(listenItems).findIndex((item) =>
+      item.classList.contains("is-active")
+    );
+    const nextItem = listenItems[currentIndex + 1];
+
+    if (nextItem) {
+      activateListenItem(nextItem);
+    }
   });
 }
 
