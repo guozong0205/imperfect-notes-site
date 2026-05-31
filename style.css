@@ -1071,3 +1071,56 @@ body.hero-bg-d {
   border-radius: 6px;
   filter: saturate(0.82) brightness(0.80);
 }
+
+/* Global border-radius softening */
+
+/* Covers, cards, player, support cards, wallpapers, inputs, and framed lists */
+.featured-card,
+.episode-card,
+.support-card,
+.listen-player,
+.listen-player__frame,
+.player__cover img,
+.about__image img,
+.wallpaper-item img,
+.wallpaper-item,
+.subscribe-form input,
+.subscribe-form button {
+  border-radius: 12px;
+}
+
+/* Medium elements */
+.listen-player__items,
+.player__playlist,
+.support-action,
+.archive-toggle,
+.listen-player__mobile-toggle {
+  border-radius: 10px;
+}
+
+/* Small elements */
+.player__btn {
+  border-radius: 50%;
+}
+
+.player__progress {
+  border-radius: 4px;
+}
+
+.player__progress::-webkit-slider-thumb {
+  border-radius: 50%;
+}
+
+.episode-label {
+  border-radius: 6px;
+}
+
+/* Image corners */
+img {
+  border-radius: 8px;
+}
+
+/* Keep hero logo circular */
+.hero__logo {
+  border-radius: 50% !important;
+}
