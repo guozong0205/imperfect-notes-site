@@ -2,12 +2,6 @@ const archiveToggle = document.querySelector(".archive-toggle");
 const extraEpisodes = document.querySelectorAll(".episode-card.is-extra");
 const subscribeForm = document.querySelector(".subscribe-form");
 const formNote = document.querySelector(".form-note");
-const listenPlayer = document.querySelector(".listen-player");
-const listenItems = document.querySelectorAll(".listen-player__item");
-const listenAudio = document.querySelector(".listen-audio");
-const listenYoutubeLink = document.querySelector(".listen-youtube-link");
-const listenToggle = document.querySelector(".listen-player__mobile-toggle");
-const listenCurrent = document.querySelector(".listen-player__current");
 const heroChoice = new URLSearchParams(window.location.search).get("hero");
 
 if (heroChoice === "a" || heroChoice === "b" || heroChoice === "c" || heroChoice === "d") {
@@ -65,68 +59,117 @@ if (archiveToggle) {
   });
 }
 
-if (listenPlayer && listenAudio) {
-  const activateListenItem = (item, shouldPlay = true) => {
-    const src = item.dataset.src;
-    const youtube = item.dataset.youtube;
-    const label = item.querySelector("strong").textContent.trim();
-    const ep = item.querySelector("span").textContent.trim();
+// Unified Player
+(function () {
+  const audio = document.getElementById("player-audio");
+  const source = document.getElementById("player-source");
+  const cover = document.getElementById("player-cover");
+  const epLabel = document.getElementById("player-ep");
+  const title = document.getElementById("player-title");
+  const desc = document.getElementById("player-desc");
+  const ytLink = document.getElementById("player-yt");
+  const btnPlay = document.getElementById("btn-play");
+  const btnPrev = document.getElementById("btn-prev");
+  const btnNext = document.getElementById("btn-next");
+  const progress = document.getElementById("player-progress");
+  const timeCurrent = document.getElementById("time-current");
+  const timeTotal = document.getElementById("time-total");
+  const tracks = Array.from(document.querySelectorAll(".player__track"));
 
-    if (!src) return;
+  if (!audio || !source || !cover || !tracks.length) return;
 
-    listenItems.forEach((button) => {
-      button.classList.remove("is-active");
-      button.removeAttribute("aria-current");
-    });
+  let currentIndex = 0;
 
-    item.classList.add("is-active");
-    item.setAttribute("aria-current", "true");
+  function fmt(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${String(secs).padStart(2, "0")}`;
+  }
 
-    listenAudio.src = src;
+  function loadTrack(index, autoplay) {
+    const track = tracks[index];
 
-    if (shouldPlay) {
-      listenAudio.play().catch(() => {});
+    tracks.forEach((item) => item.classList.remove("is-active"));
+    track.classList.add("is-active");
+    track.scrollIntoView({ block: "nearest" });
+
+    cover.style.opacity = "0";
+    setTimeout(() => {
+      cover.src = track.dataset.cover;
+      cover.alt = `EP.${track.dataset.ep} cover`;
+      cover.style.opacity = "1";
+    }, 200);
+
+    epLabel.textContent = `EP.${track.dataset.ep}`;
+    title.textContent = track.querySelector("strong").textContent;
+    desc.textContent = track.dataset.desc || "";
+    ytLink.href = track.dataset.youtube || "#";
+    source.src = track.dataset.src;
+    audio.load();
+    progress.value = 0;
+    timeCurrent.textContent = "0:00";
+    timeTotal.textContent = "0:00";
+    currentIndex = index;
+
+    if (autoplay) {
+      audio.play().catch(() => {});
     }
 
-    if (listenYoutubeLink && youtube) {
-      listenYoutubeLink.href = youtube;
-    }
+    btnPlay.textContent = autoplay ? "❚❚" : "▶";
+  }
 
-    if (listenCurrent) {
-      listenCurrent.textContent = `${ep} ${label}`;
-    }
-
-    listenPlayer.classList.remove("is-open");
-
-    if (listenToggle) {
-      listenToggle.setAttribute("aria-expanded", "false");
-    }
-  };
-
-  listenItems.forEach((item) => {
-    item.addEventListener("click", () => {
-      activateListenItem(item);
-    });
+  tracks.forEach((track, index) => {
+    track.addEventListener("click", () => loadTrack(index, true));
   });
 
-  listenAudio.addEventListener("ended", () => {
-    const currentIndex = Array.from(listenItems).findIndex((item) =>
-      item.classList.contains("is-active")
-    );
-    const nextItem = listenItems[currentIndex + 1];
-
-    if (nextItem) {
-      activateListenItem(nextItem);
+  btnPlay.addEventListener("click", () => {
+    if (audio.paused) {
+      audio.play();
+      btnPlay.textContent = "❚❚";
+    } else {
+      audio.pause();
+      btnPlay.textContent = "▶";
     }
   });
-}
 
-if (listenToggle && listenPlayer) {
-  listenToggle.addEventListener("click", () => {
-    const isOpen = listenPlayer.classList.toggle("is-open");
-    listenToggle.setAttribute("aria-expanded", String(isOpen));
+  btnPrev.addEventListener("click", () => {
+    if (currentIndex > 0) loadTrack(currentIndex - 1, !audio.paused);
   });
-}
+
+  btnNext.addEventListener("click", () => {
+    if (currentIndex < tracks.length - 1) loadTrack(currentIndex + 1, !audio.paused);
+  });
+
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration) return;
+    progress.value = (audio.currentTime / audio.duration) * 100;
+    timeCurrent.textContent = fmt(audio.currentTime);
+  });
+
+  audio.addEventListener("loadedmetadata", () => {
+    timeTotal.textContent = fmt(audio.duration);
+  });
+
+  progress.addEventListener("input", () => {
+    if (audio.duration) audio.currentTime = (progress.value / 100) * audio.duration;
+  });
+
+  audio.addEventListener("ended", () => {
+    if (currentIndex < tracks.length - 1) {
+      loadTrack(currentIndex + 1, true);
+    } else {
+      btnPlay.textContent = "▶";
+    }
+  });
+
+  audio.addEventListener("play", () => {
+    btnPlay.textContent = "❚❚";
+  });
+
+  audio.addEventListener("pause", () => {
+    btnPlay.textContent = "▶";
+  });
+})();
 
 if (subscribeForm) {
   subscribeForm.addEventListener("submit", (event) => {

@@ -23,23 +23,64 @@
         </div>
       </section>
 
-      <section class="featured section" id="featured" aria-label="Latest episode">
-        <div class="section__inner">
-          <article class="featured-card">
-            <div class="featured-card__media">
-              <img src="assets/covers/latest.jpg" alt="Where the Last Light Lingers cover" loading="lazy">
+      <section class="player section" id="featured" aria-label="Listen to Imperfect Notes">
+        <div class="player__inner">
+          <div class="player__cover">
+            <img id="player-cover" src="assets/covers/ep11.jpg" alt="EP.11 cover">
+          </div>
+
+          <div class="player__panel">
+            <div class="player__now">
+              <span class="episode-label" id="player-ep">EP.11</span>
+              <h2 id="player-title">Where the Last Light Lingers</h2>
+              <p id="player-desc">Bittersweet Classical Guitar &amp; Piano</p>
             </div>
-            <div class="featured-card__content">
-              <span class="episode-label">EP.11</span>
-              <h2>Where the Last Light Lingers</h2>
-              <p>Bittersweet Classical Guitar &amp; Piano</p>
-              <nav class="text-links" aria-label="Listen links for latest episode">
-                <a href="https://www.youtube.com/watch?v=l__iuwGHJxo" target="_blank" rel="noreferrer">▶ 在 YouTube 收聽</a>
-                <a href="https://www.douyin.com/video/7645606440341687579" target="_blank" rel="noreferrer">抖音</a>
-                <span class="muted-link" aria-disabled="true">B站待更新</span>
-              </nav>
+
+            <audio id="player-audio" preload="none">
+              <source id="player-source" src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep11.mp3" type="audio/mpeg">
+            </audio>
+
+            <div class="player__controls">
+              <button class="player__btn player__btn--prev" id="btn-prev" type="button" aria-label="上一首">&#9664;&#9664;</button>
+              <button class="player__btn player__btn--play" id="btn-play" type="button" aria-label="播放">&#9654;</button>
+              <button class="player__btn player__btn--next" id="btn-next" type="button" aria-label="下一首">&#9654;&#9654;</button>
             </div>
-          </article>
+
+            <div class="player__progress-wrap">
+              <span class="player__time" id="time-current">0:00</span>
+              <input class="player__progress" id="player-progress" type="range" min="0" max="100" value="0" step="0.1">
+              <span class="player__time" id="time-total">0:00</span>
+            </div>
+
+            <a class="player__yt-link" id="player-yt" href="https://www.youtube.com/watch?v=l__iuwGHJxo" target="_blank" rel="noreferrer">▶ 在 YouTube 完整收聽</a>
+
+            <ul class="player__playlist" id="player-playlist">
+              <li class="player__track is-active" data-ep="11" data-cover="assets/covers/ep11.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep11.mp3" data-youtube="https://www.youtube.com/watch?v=l__iuwGHJxo" data-desc="Bittersweet Classical Guitar &amp; Piano">
+                <span>EP.11</span><strong>Where the Last Light Lingers</strong>
+              </li>
+              <li class="player__track" data-ep="10" data-cover="assets/covers/ep10.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep10.mp3" data-youtube="https://www.youtube.com/watch?v=zXM3cUu_4wM" data-desc="Cinematic Orchestral">
+                <span>EP.10</span><strong>The Fallen Stone Listens</strong>
+              </li>
+              <li class="player__track" data-ep="09" data-cover="assets/covers/ep09.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep09.mp3" data-youtube="https://www.youtube.com/watch?v=hU7_Vo_dJs8" data-desc="Ambient Classical">
+                <span>EP.09</span><strong>The Flower Between Stones</strong>
+              </li>
+              <li class="player__track" data-ep="08" data-cover="assets/covers/ep08.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep08.mp3" data-youtube="https://www.youtube.com/watch?v=IWPH7VISuDE" data-desc="Orchestral Ballad">
+                <span>EP.08</span><strong>The Golden Hall Listens</strong>
+              </li>
+              <li class="player__track" data-ep="07" data-cover="assets/covers/ep07.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep07.mp3" data-youtube="https://www.youtube.com/watch?v=3lax6Ouyju8" data-desc="Neoclassical Piano">
+                <span>EP.07</span><strong>The Stone Face Sleeps</strong>
+              </li>
+              <li class="player__track" data-ep="06" data-cover="assets/covers/ep06.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep06.mp3" data-youtube="https://www.youtube.com/watch?v=n6TNHRj-l2A" data-desc="Ambient Piano">
+                <span>EP.06</span><strong>Light Beyond the Gate</strong>
+              </li>
+              <li class="player__track" data-ep="05" data-cover="assets/covers/ep05.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep05.mp3" data-youtube="https://www.youtube.com/watch?v=g-1277pAFjM" data-desc="Classical Guitar">
+                <span>EP.05</span><strong>The Light Between Notes</strong>
+              </li>
+              <li class="player__track" data-ep="04" data-cover="assets/covers/ep04.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep04.mp3" data-youtube="https://www.youtube.com/watch?v=iTcz7duph38" data-desc="Ambient Piano">
+                <span>EP.04</span><strong>The Weight of Stillness</strong>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -89,60 +130,6 @@
             </a>
           </div>
           <button class="archive-toggle" type="button" data-expanded="false"><span>查看全部 →</span><span>View All →</span></button>
-        </div>
-      </section>
-
-      <section class="listen section" id="listen" aria-labelledby="listen-title">
-        <div class="section__inner">
-          <p class="section-kicker" id="listen-title"><span>聆聽</span><span>Listen</span></p>
-          <div class="listen-player">
-            <div class="listen-player__list" aria-label="Episode playlist">
-              <button class="listen-player__mobile-toggle" type="button" aria-expanded="false">
-                <span class="listen-player__current">EP.11 Where the Last Light Lingers</span>
-                <span>選擇曲目 ↓</span>
-              </button>
-              <div class="listen-player__items">
-                <button class="listen-player__item is-active" type="button" data-ep="11" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep11.mp3" data-youtube="https://www.youtube.com/watch?v=l__iuwGHJxo" aria-current="true">
-                  <span>EP.11</span>
-                  <strong>Where the Last Light Lingers</strong>
-                </button>
-                <button class="listen-player__item" type="button" data-ep="10" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep10.mp3" data-youtube="https://www.youtube.com/watch?v=zXM3cUu_4wM">
-                  <span>EP.10</span>
-                  <strong>The Fallen Stone Listens</strong>
-                </button>
-                <button class="listen-player__item" type="button" data-ep="09" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep09.mp3" data-youtube="https://www.youtube.com/watch?v=hU7_Vo_dJs8">
-                  <span>EP.09</span>
-                  <strong>The Flower Between Stones</strong>
-                </button>
-                <button class="listen-player__item" type="button" data-ep="08" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep08.mp3" data-youtube="https://www.youtube.com/watch?v=IWPH7VISuDE">
-                  <span>EP.08</span>
-                  <strong>The Golden Hall Listens</strong>
-                </button>
-                <button class="listen-player__item" type="button" data-ep="07" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep07.mp3" data-youtube="https://www.youtube.com/watch?v=3lax6Ouyju8">
-                  <span>EP.07</span>
-                  <strong>The Stone Face Sleeps</strong>
-                </button>
-                <button class="listen-player__item" type="button" data-ep="06" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep06.mp3" data-youtube="https://www.youtube.com/watch?v=n6TNHRj-l2A">
-                  <span>EP.06</span>
-                  <strong>Light Beyond the Gate</strong>
-                </button>
-                <button class="listen-player__item" type="button" data-ep="05" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep05.mp3" data-youtube="https://www.youtube.com/watch?v=g-1277pAFjM">
-                  <span>EP.05</span>
-                  <strong>The Light Between Notes</strong>
-                </button>
-                <button class="listen-player__item" type="button" data-ep="04" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep04.mp3" data-youtube="https://www.youtube.com/watch?v=iTcz7duph38">
-                  <span>EP.04</span>
-                  <strong>The Weight of Stillness</strong>
-                </button>
-              </div>
-            </div>
-            <div class="listen-player__frame">
-              <audio class="listen-audio" controls preload="none">
-                <source src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep11.mp3" type="audio/mpeg">
-              </audio>
-              <a class="listen-youtube-link" href="https://www.youtube.com/watch?v=l__iuwGHJxo" target="_blank" rel="noreferrer">▶ 在 YouTube 完整收聽</a>
-            </div>
-          </div>
         </div>
       </section>
 
