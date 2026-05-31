@@ -1127,3 +1127,26 @@ img {
 .hero__logo {
   border-radius: 50% !important;
 }
+
+@media (max-width: 680px) {
+  .player__controls {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 680px) {
+  .about__grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  .about__image {
+    width: 100%;
+  }
+
+  .about__image img {
+    width: 100%;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 12px;
+  }
+}
