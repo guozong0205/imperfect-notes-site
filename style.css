@@ -1144,6 +1144,9 @@ img {
   .player__controls {
     justify-content: center;
   }
+  .hero p {
+    font-size: 15px;
+  }
 }
 
 @media (max-width: 680px) {

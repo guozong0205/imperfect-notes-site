@@ -124,7 +124,12 @@ if (archiveToggle) {
 
   btnPlay.addEventListener("click", () => {
     if (audio.paused) {
-      audio.play();
+      if (audio.readyState === 0) {
+        audio.load();
+        audio.addEventListener("canplay", () => audio.play().catch(() => {}), { once: true });
+      } else {
+        audio.play().catch(() => {});
+      }
       btnPlay.textContent = "❚❚";
     } else {
       audio.pause();
