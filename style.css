@@ -1190,4 +1190,8 @@ img {
     aspect-ratio: 16 / 9 !important;
     border-radius: 12px;
   }
+
+  .wallpaper-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
