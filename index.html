@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Imperfect Notes 的線上主頁。Quiet music, classical atmosphere, almost remembered.">
+    <title>Imperfect Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Noto+Serif+TC:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body class="hero-bg-a">
+    <main>
+      <section class="hero section" id="top" aria-label="Imperfect Notes">
+        <div class="watermark" aria-hidden="true">Imperfect Notes</div>
+        <div class="hero__inner reveal">
+          <img class="hero__logo" src="assets/logo/in-logo.svg" alt="IN logo" width="96" height="96">
+          <h1>Imperfect Notes</h1>
+          <p class="hero__subtitle"><span>靜默之中，有些聲音一直在。</span><span>In the silence, something has always been there.</span></p>
+          <span class="hairline" aria-hidden="true"></span>
+          <a class="down-link" href="#featured" aria-label="Scroll to featured music">↓</a>
+        </div>
+      </section>
+
+      <section class="featured section" id="featured" aria-labelledby="featured-title">
+        <div class="section__inner">
+          <p class="section-kicker" id="featured-title"><span>本季</span><span>This Season</span></p>
+          <article class="featured-card">
+            <div class="featured-card__media">
+              <img src="assets/covers/latest.jpg" alt="Where the Last Light Lingers cover" loading="lazy">
+            </div>
+            <div class="featured-card__content">
+              <span class="episode-label">EP.11</span>
+              <h2>Where the Last Light Lingers</h2>
+              <p>Bittersweet Classical Guitar &amp; Piano</p>
+              <nav class="text-links" aria-label="Listen links for latest episode">
+                <a href="https://www.youtube.com/watch?v=l__iuwGHJxo" target="_blank" rel="noreferrer">▶ 在 YouTube 收聽</a>
+                <a href="https://www.douyin.com/video/7645606440341687579" target="_blank" rel="noreferrer">抖音</a>
+                <span class="muted-link" aria-disabled="true">B站待更新</span>
+              </nav>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="archive section" id="archive" aria-labelledby="archive-title">
+        <div class="section__inner">
+          <p class="section-kicker" id="archive-title"><span>所有作品</span><span>All Episodes</span></p>
+          <div class="episode-grid">
+            <a class="episode-card" href="https://www.youtube.com/watch?v=l__iuwGHJxo" target="_blank" rel="noreferrer">
+              <img src="assets/covers/ep11.jpg" alt="EP.11 cover" loading="lazy">
+              <span>EP.11</span>
+              <h3>Where the Last Light Lingers</h3>
+            </a>
+            <a class="episode-card" href="https://www.youtube.com/watch?v=zXM3cUu_4wM" target="_blank" rel="noreferrer">
+              <img src="assets/covers/ep10.jpg" alt="EP.10 cover" loading="lazy">
+              <span>EP.10</span>
+              <h3>The Fallen Stone Listens</h3>
+            </a>
+            <a class="episode-card" href="https://www.youtube.com/watch?v=hU7_Vo_dJs8" target="_blank" rel="noreferrer">
+              <img src="assets/covers/ep09.jpg" alt="EP.09 cover" loading="lazy">
+              <span>EP.09</span>
+              <h3>The Flower Between Stones</h3>
+            </a>
+            <a class="episode-card" href="https://www.youtube.com/watch?v=IWPH7VISuDE" target="_blank" rel="noreferrer">
+              <img src="assets/covers/ep08.jpg" alt="EP.08 cover" loading="lazy">
+              <span>EP.08</span>
+              <h3>The Golden Hall Listens</h3>
+            </a>
+            <a class="episode-card" href="https://www.youtube.com/watch?v=3lax6Ouyju8" target="_blank" rel="noreferrer">
+              <img src="assets/covers/ep07.jpg" alt="EP.07 cover" loading="lazy">
+              <span>EP.07</span>
+              <h3>The Stone Face Sleeps</h3>
+            </a>
+            <a class="episode-card" href="https://www.youtube.com/watch?v=n6TNHRj-l2A" target="_blank" rel="noreferrer">
+              <img src="assets/covers/ep06.jpg" alt="EP.06 cover" loading="lazy">
+              <span>EP.06</span>
+              <h3>Light Beyond the Gate</h3>
+            </a>
+            <a class="episode-card is-extra" href="https://www.youtube.com/watch?v=g-1277pAFjM" target="_blank" rel="noreferrer" hidden>
+              <img src="assets/covers/ep05.jpg" alt="EP.05 cover" loading="lazy">
+              <span>EP.05</span>
+              <h3>The Light Between Notes</h3>
+            </a>
+            <a class="episode-card is-extra" href="https://www.youtube.com/watch?v=iTcz7duph38" target="_blank" rel="noreferrer" hidden>
+              <img src="assets/covers/ep04.jpg" alt="EP.04 cover" loading="lazy">
+              <span>EP.04</span>
+              <h3>The Weight of Stillness</h3>
+            </a>
+          </div>
+          <button class="archive-toggle" type="button" data-expanded="false"><span>查看全部 →</span><span>View All →</span></button>
+        </div>
+      </section>
+
+      <section class="listen section" id="listen" aria-labelledby="listen-title">
+        <div class="section__inner">
+          <p class="section-kicker" id="listen-title"><span>聆聽</span><span>Listen</span></p>
+          <div class="listen-player">
+            <div class="listen-player__list" aria-label="Episode playlist">
+              <button class="listen-player__mobile-toggle" type="button" aria-expanded="false">
+                <span class="listen-player__current">EP.11 Where the Last Light Lingers</span>
+                <span>選擇曲目 ↓</span>
+              </button>
+              <div class="listen-player__items">
+                <button class="listen-player__item is-active" type="button" data-ep="11" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep11.mp3" data-youtube="https://www.youtube.com/watch?v=l__iuwGHJxo" aria-current="true">
+                  <span>EP.11</span>
+                  <strong>Where the Last Light Lingers</strong>
+                </button>
+                <button class="listen-player__item" type="button" data-ep="10" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep10.mp3" data-youtube="https://www.youtube.com/watch?v=zXM3cUu_4wM">
+                  <span>EP.10</span>
+                  <strong>The Fallen Stone Listens</strong>
+                </button>
+                <button class="listen-player__item" type="button" data-ep="09" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep09.mp3" data-youtube="https://www.youtube.com/watch?v=hU7_Vo_dJs8">
+                  <span>EP.09</span>
+                  <strong>The Flower Between Stones</strong>
+                </button>
+                <button class="listen-player__item" type="button" data-ep="08" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep08.mp3" data-youtube="https://www.youtube.com/watch?v=IWPH7VISuDE">
+                  <span>EP.08</span>
+                  <strong>The Golden Hall Listens</strong>
+                </button>
+                <button class="listen-player__item" type="button" data-ep="07" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep07.mp3" data-youtube="https://www.youtube.com/watch?v=3lax6Ouyju8">
+                  <span>EP.07</span>
+                  <strong>The Stone Face Sleeps</strong>
+                </button>
+                <button class="listen-player__item" type="button" data-ep="06" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep06.mp3" data-youtube="https://www.youtube.com/watch?v=n6TNHRj-l2A">
+                  <span>EP.06</span>
+                  <strong>Light Beyond the Gate</strong>
+                </button>
+                <button class="listen-player__item" type="button" data-ep="05" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep05.mp3" data-youtube="https://www.youtube.com/watch?v=g-1277pAFjM">
+                  <span>EP.05</span>
+                  <strong>The Light Between Notes</strong>
+                </button>
+                <button class="listen-player__item" type="button" data-ep="04" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep04.mp3" data-youtube="https://www.youtube.com/watch?v=iTcz7duph38">
+                  <span>EP.04</span>
+                  <strong>The Weight of Stillness</strong>
+                </button>
+              </div>
+            </div>
+            <div class="listen-player__frame">
+              <audio class="listen-audio" controls preload="none">
+                <source src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep11.mp3" type="audio/mpeg">
+              </audio>
+              <a class="listen-youtube-link" href="https://www.youtube.com/watch?v=l__iuwGHJxo" target="_blank" rel="noreferrer">▶ 在 YouTube 完整收聽</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about section" id="about" aria-labelledby="about-title">
+        <div class="section__inner about__grid">
+          <div class="about__image">
+            <img src="assets/covers/about.jpg" alt="石像與花的主視覺" loading="lazy">
+          </div>
+          <div class="about__copy">
+            <h2 id="about-title"><span>關於這裡</span><span>About This Place</span></h2>
+            <div class="copy-block">
+              <p>有些聲音，你說不清楚它好在哪裡。</p>
+              <p>它只是在那裡。<br>在你需要安靜的時候，剛好在。</p>
+              <p>Imperfect Notes 做的，就是這樣的聲音。<br>不完美。但它是真的。</p>
+              <p>給還在撐著的人。<br>給需要一點空白的人。<br>給願意在喧囂裡，停下來聽一聽的人。</p>
+            </div>
+            <div class="copy-block copy-block--en">
+              <p>Some sounds, you can't explain why they move you.</p>
+              <p>They're just there.<br>There when you need quiet. Right on time.</p>
+              <p>That's what Imperfect Notes makes.<br>Imperfect. But real.</p>
+              <p>For those still holding on.<br>For those who need a moment of stillness.<br>For those willing to stop, in the noise, and listen.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="support section" id="support" aria-labelledby="support-title">
+        <div class="section__inner">
+          <p class="section-kicker" id="support-title"><span>支持這裡</span><span>Support This</span></p>
+          <div class="support-grid">
+            <article class="support-card">
+              <h3>每月支持</h3>
+              <p>每期無損音頻下載（FLAC 格式）</p>
+              <strong>¥ 9.9 / 月　自動續費</strong>
+              <a class="support-action" href="https://ifdian.net/a/imperfectnotes" target="_blank" rel="noreferrer"><span>订阅无损音频 ¥9.9/月</span></a>
+            </article>
+          </div>
+          <div class="wallpaper-section">
+            <h3 class="wallpaper-title"><span>免費壁紙</span><span>Free Wallpapers</span></h3>
+            <p class="wallpaper-desc"><span>4K 高清封面，免費下載</span><span>4K covers, free to download</span></p>
+            <div class="wallpaper-grid">
+              <a href="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep11_desktop_4k.jpg" target="_blank" rel="noreferrer" class="wallpaper-item" title="EP.11 — 下載">
+                <img src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep11_desktop_4k.jpg" alt="EP.11 wallpaper" loading="lazy">
+                <span class="wallpaper-label">EP.11 ↓</span>
+              </a>
+              <a href="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep10_desktop_4k.jpg" target="_blank" rel="noreferrer" class="wallpaper-item" title="EP.10 — 下載">
+                <img src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep10_desktop_4k.jpg" alt="EP.10 wallpaper" loading="lazy">
+                <span class="wallpaper-label">EP.10 ↓</span>
+              </a>
+              <a href="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep9_desktop_4k.jpg" target="_blank" rel="noreferrer" class="wallpaper-item" title="EP.09 — 下載">
+                <img src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep9_desktop_4k.jpg" alt="EP.09 wallpaper" loading="lazy">
+                <span class="wallpaper-label">EP.09 ↓</span>
+              </a>
+              <a href="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep8_desktop_4k.jpg" target="_blank" rel="noreferrer" class="wallpaper-item" title="EP.08 — 下載">
+                <img src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep8_desktop_4k.jpg" alt="EP.08 wallpaper" loading="lazy">
+                <span class="wallpaper-label">EP.08 ↓</span>
+              </a>
+            </div>
+          </div>
+          <p class="support-note"><span>透過愛發電付款，支援微信支付與支付寶</span><span>Payment via Aifadian · WeChat Pay &amp; Alipay supported</span></p>
+        </div>
+      </section>
+
+      <section class="follow section" id="follow" aria-labelledby="follow-title">
+        <div class="section__inner follow__inner">
+          <h2 id="follow-title"><span>留下來</span><span>Stay with the sound</span></h2>
+          <nav class="follow-links" aria-label="Follow Imperfect Notes">
+            <a href="https://www.douyin.com/video/7645606440341687579" target="_blank" rel="noreferrer">抖音</a>
+            <a href="https://www.youtube.com/watch?v=l__iuwGHJxo" target="_blank" rel="noreferrer">YouTube</a>
+            <span aria-disabled="true">B站</span>
+          </nav>
+          <p class="follow-copy"><span>留下信箱，新一期發布時我會通知你。</span><span>Leave your email — I'll let you know when a new episode is out.</span></p>
+          <form class="subscribe-form" action="" method="post">
+            <label class="sr-only" for="email">信箱</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="信箱">
+            <button type="submit"><span>訂閱</span><span>Subscribe</span></button>
+          </form>
+          <p class="form-note" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="footer">
+      <p>Imperfect Notes · the sound of something almost remembered</p>
+      <p>© 2026</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
