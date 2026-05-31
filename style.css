@@ -1071,8 +1071,20 @@ body.hero-bg-d {
 
 .about__image img {
   aspect-ratio: 3 / 4;
-  border-radius: 6px;
+  border-radius: 12px;
   filter: saturate(0.82) brightness(0.80);
+}
+
+@media (max-width: 1024px) {
+  .about__grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .about__image img {
+    aspect-ratio: 16 / 9 !important;
+    width: 100%;
+    border-radius: 12px;
+  }
 }
 
 /* Global border-radius softening */
