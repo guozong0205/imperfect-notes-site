@@ -355,8 +355,9 @@ body.hero-bg-d {
   min-width: 0;
   padding: 14px;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: 12px;
   background: var(--panel);
+  overflow: hidden;
 }
 
 .episode-card img {
@@ -366,6 +367,7 @@ body.hero-bg-d {
   object-fit: cover;
   filter: brightness(0.92);
   transition: filter 0.2s ease;
+  border-radius: 8px;
 }
 
 .episode-card:hover img {
@@ -559,8 +561,9 @@ body.hero-bg-d {
   min-width: 0;
   padding: 28px;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: 16px;
   background: var(--panel);
+  overflow: hidden;
 }
 
 .support-card h3 {
@@ -843,7 +846,7 @@ body.hero-bg-d {
 .player__cover img {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 4px;
+  border-radius: 16px;
   object-fit: cover;
   transition: opacity 0.2s ease;
 }
