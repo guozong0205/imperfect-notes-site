@@ -1,10 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Imperfect Notes 的線上主頁。Quiet music, classical atmosphere, almost remembered.">
-    <title>Imperfect Notes</title>
+    <meta name="description" content="不完美，也沒關係。一間安靜創作的工作室。">
+    <title>Imperfect Notes Studio</title>
     <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +21,7 @@
   </head>
   <body class="hero-bg-a">
     <nav class="site-nav" aria-label="主站導航">
+      <a href="#works">作品</a>
       <a href="#featured">音樂</a>
       <a href="self/">找自己</a>
       <a href="#support">支持</a>
@@ -30,15 +31,50 @@
         <div class="watermark" aria-hidden="true">Imperfect Notes</div>
         <div class="hero__inner reveal">
           <img class="hero__logo" src="assets/logo/in-logo.svg" alt="IN logo" width="96" height="96">
-          <h1>Imperfect Notes</h1>
-          <p class="hero__subtitle"><span>靜默之中，有些聲音一直在。</span><span>In the silence, something has always been there.</span></p>
+          <p class="hero__eyebrow">Imperfect Notes Studio</p>
+          <span class="hero__brand-line" aria-hidden="true"></span>
+          <p class="hero__studio-name">不完美的音符工作室</p>
+          <h1><span>不完美，</span><span>也沒關係。</span></h1>
+          <p class="hero__english">It's okay to be imperfect.</p>
+          <p class="hero__subtitle"><span>一間安靜創作的工作室。</span><span>音樂，文字，和一些幫你靠近自己的小東西。</span></p>
           <span class="hairline" aria-hidden="true"></span>
-          <a class="down-link" href="#featured" aria-label="Scroll to featured music">↓</a>
+          <a class="down-link" href="#works" aria-label="Scroll to works">↓</a>
+        </div>
+      </section>
+
+      <section class="works section" id="works" aria-labelledby="works-title">
+        <div class="section__inner">
+          <div class="works__head">
+            <h2 id="works-title">我們的作品</h2>
+            <p>Works</p>
+          </div>
+          <div class="works__grid">
+            <a class="work-card work-card--music" href="#featured" onclick="window.gtag&amp;&amp;gtag('event','works_music_click')">
+              <p class="work-card__name">Music Notes · 音樂</p>
+              <h3>聽，是被陪伴。</h3>
+              <p class="work-card__desc">每一期，一小時的安靜。</p>
+              <span class="work-card__cta">去聽 ↓</span>
+            </a>
+            <a class="work-card work-card--self" href="self/" onclick="window.gtag&amp;&amp;gtag('event','works_self_click')">
+              <p class="work-card__name">找自己 · Self Notes</p>
+              <h3>寫，是看見自己。</h3>
+              <p class="work-card__desc">一份溫柔、清楚、屬於你的自我筆記。</p>
+              <span class="work-card__cta">開始找自己 →</span>
+            </a>
+            <article class="work-card work-card--soon" aria-disabled="true">
+              <p class="work-card__name">下一件作品</p>
+              <h3>正在路上，慢慢做。</h3>
+            </article>
+          </div>
         </div>
       </section>
 
       <section class="player section" id="featured" aria-label="Listen to Imperfect Notes">
         <div class="player__inner">
+          <div class="player__kicker">
+            <p>靜默之中，有些聲音一直在。</p>
+            <p>In the silence, something has always been there.</p>
+          </div>
           <div class="player__cover">
             <img id="player-cover" src="assets/covers/ep11.jpg" alt="EP.11 cover">
           </div>
@@ -122,7 +158,7 @@
             你的氣質，你的矛盾，你正走到的階段。
           </p>
           <p class="self-gate__quiet">不打分，不評判，只是幫你看清。</p>
-          <a class="self-gate__action" href="self/" onclick="window.gtag&&gtag('event','self_entry_click')"><span>開始找自己 →</span></a>
+          <a class="self-gate__action" href="self/" onclick="window.gtag&amp;&amp;gtag('event','self_entry_click')"><span>開始找自己 →</span></a>
         </div>
       </section>
 
@@ -132,18 +168,9 @@
             <img src="assets/covers/about.jpg" alt="石像與花的主視覺" loading="lazy">
           </div>
           <div class="about__copy">
-            <h2 id="about-title"><span>關於這裡</span><span>About This Place</span></h2>
+            <h2 id="about-title"><span>關於這間工作室</span><span>About the Studio</span></h2>
             <div class="copy-block">
-              <p>有些聲音，你說不清楚它好在哪裡。</p>
-              <p>它只是在那裡。<br>在你需要安靜的時候，剛好在。</p>
-              <p>Imperfect Notes 做的就是這樣的聲音。<br>不完美，但它是真的。</p>
-              <p>給還在撐著的人，<br>給需要一點空間的人，<br>給願意在喧囂裡，停下來聽一聽的人。</p>
-            </div>
-            <div class="copy-block copy-block--en">
-              <p>Some sounds, you can't explain why they move you.</p>
-              <p>They're just there.<br>There when you need quiet. Right on time.</p>
-              <p>That's what Imperfect Notes makes.<br>Imperfect. But real.</p>
-              <p>For those still holding on.<br>For those who need a moment of stillness.<br>For those willing to stop, in the noise, and listen.</p>
+              <p>我們並不"完美"。<br>但每一件拿出來的作品，都飽含真誠。<br>給那些還在撐著的人，給需要一點空間的人。<br>作品會慢慢變多，治癒的種子也在慢慢發芽。<br>慢一點，也沒關係。</p>
             </div>
           </div>
         </div>
@@ -217,7 +244,7 @@
     <footer class="site-footer" id="footer">
       <p>Imperfect Notes · the sound of something almost remembered</p>
       <p><a href="privacy/">隱私與你的信息</a></p>
-      <p>© 2026</p>
+      <p>© 2026 Imperfect Notes Studio</p>
     </footer>
 
     <script src="script.js"></script>
