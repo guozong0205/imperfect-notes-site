@@ -150,6 +150,29 @@ body.hero-bg-d {
   --hero-image: url("assets/hero-statue-d.jpg");
 }
 
+.site-nav {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  z-index: 10;
+  display: flex;
+  gap: clamp(22px, 4vw, 44px);
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%);
+  color: rgba(216, 220, 226, 0.72);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+}
+
+.site-nav a {
+  transition: color 0.2s ease;
+}
+
+.site-nav a:hover {
+  color: var(--warm);
+}
+
 #cursor-glow {
   position: fixed;
   width: 320px;
@@ -1021,6 +1044,84 @@ body.hero-bg-d {
   letter-spacing: 0;
 }
 
+.self-gate {
+  background: #fffaf1;
+  color: #3b3028;
+}
+
+.self-gate__inner {
+  display: grid;
+  gap: 20px;
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: clamp(84px, 11vw, 132px) 0;
+}
+
+.self-gate__eyebrow,
+.self-gate__tagline,
+.self-gate__copy,
+.self-gate__quiet {
+  margin: 0;
+}
+
+.self-gate__eyebrow {
+  color: #a66f47;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-style: italic;
+  letter-spacing: 0;
+}
+
+.self-gate h2 {
+  margin: 0;
+  color: #3b3028;
+  font-family: var(--font-display);
+  font-size: clamp(76px, 13vw, 154px);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 0.92;
+}
+
+.self-gate__tagline {
+  color: #3b3028;
+  font-size: clamp(20px, 2.6vw, 30px);
+  line-height: 1.7;
+}
+
+.self-gate__copy {
+  max-width: 760px;
+  color: #5f5148;
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 2.15;
+}
+
+.self-gate__quiet {
+  color: #8b7a6b;
+}
+
+.self-gate__action {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 12px 24px;
+  border: 1px solid #3b3028;
+  border-radius: 999px;
+  background: #a66f47;
+  color: #211914;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.self-gate__action:hover {
+  background: #bd8357;
+  transform: translateY(-1px);
+}
+
 @media (max-width: 680px) {
   .player__inner {
     grid-template-columns: 1fr;
@@ -1031,6 +1132,22 @@ body.hero-bg-d {
   .player__cover {
     width: min(280px, 100%);
     margin: 0 auto;
+  }
+
+  .site-nav {
+    top: 20px;
+    width: min(100% - 28px, 360px);
+    gap: 24px;
+    font-size: 12px;
+  }
+
+  .self-gate__inner {
+    width: min(100% - 28px, 680px);
+    padding: 74px 0;
+  }
+
+  .self-gate__action {
+    width: 100%;
   }
 }
 

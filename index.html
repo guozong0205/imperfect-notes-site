@@ -20,6 +20,11 @@
     </script>
   </head>
   <body class="hero-bg-a">
+    <nav class="site-nav" aria-label="主站導航">
+      <a href="#featured">音樂</a>
+      <a href="self/">找自己</a>
+      <a href="#support">支持</a>
+    </nav>
     <main>
       <section class="hero section" id="top" aria-label="Imperfect Notes">
         <div class="watermark" aria-hidden="true">Imperfect Notes</div>
@@ -64,6 +69,18 @@
             <a class="player__yt-link" id="player-yt" href="https://www.youtube.com/watch?v=l__iuwGHJxo" target="_blank" rel="noreferrer">▶ 在 YouTube 完整收聽</a>
 
             <ul class="player__playlist" id="player-playlist">
+              <li class="player__track" data-ep="15" data-cover="assets/covers/ep15.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep15.mp3" data-youtube="https://www.youtube.com/watch?v=xiqFZosnjV0" data-desc="Warm Jazz-Tinged Solo Piano for Deep Focus &amp; Rest">
+                <span>EP.15</span><strong>It's Okay to Slow Down</strong>
+              </li>
+              <li class="player__track" data-ep="14" data-cover="assets/covers/ep14.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep14.mp3" data-youtube="https://www.youtube.com/watch?v=UOkIDXmEN4g" data-desc="Soft Jazz Cello &amp; Piano for Deep Focus">
+                <span>EP.14</span><strong>The Long Way Home</strong>
+              </li>
+              <li class="player__track" data-ep="13" data-cover="assets/covers/ep13.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep13.mp3" data-youtube="https://www.youtube.com/watch?v=b2LURp5XsXM" data-desc="Soft Jazz Trumpet &amp; Piano">
+                <span>EP.13</span><strong>After All</strong>
+              </li>
+              <li class="player__track" data-ep="12" data-cover="assets/covers/ep12.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep12.mp3" data-youtube="https://www.youtube.com/watch?v=ObtJOTf_fmA" data-desc="Tender Piano &amp; Classical Guitar for Deep Focus and Late Night Stillness">
+                <span>EP.12</span><strong>Still Here</strong>
+              </li>
               <li class="player__track is-active" data-ep="11" data-cover="assets/covers/ep11.jpg" data-src="https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep11.mp3" data-youtube="https://www.youtube.com/watch?v=l__iuwGHJxo" data-desc="Bittersweet Classical Guitar &amp; Piano">
                 <span>EP.11</span><strong>Where the Last Light Lingers</strong>
               </li>
@@ -90,6 +107,22 @@
               </li>
             </ul>
           </div>
+        </div>
+      </section>
+
+      <section class="self-gate section" id="self-notes" aria-labelledby="self-notes-title">
+        <div class="self-gate__inner">
+          <p class="self-gate__eyebrow">Self Notes</p>
+          <h2 id="self-notes-title">找自己</h2>
+          <p class="self-gate__tagline">找自己，是治癒的開始。</p>
+          <p class="self-gate__copy">
+            如果聽完一首曲子，你還想再多停留一會兒——<br>
+            可以試著，寫下一點關於自己的事。<br>
+            我們會陪你整理出一份溫柔的自我筆記：<br>
+            你的氣質，你的矛盾，你正走到的階段。
+          </p>
+          <p class="self-gate__quiet">不打分，不評判，只是幫你看清。</p>
+          <a class="self-gate__action" href="self/" onclick="window.gtag&&gtag('event','self_entry_click')"><span>去寫一份自我筆記 →</span></a>
         </div>
       </section>
 
@@ -183,6 +216,7 @@
 
     <footer class="site-footer" id="footer">
       <p>Imperfect Notes · the sound of something almost remembered</p>
+      <p><a href="privacy/">隱私與你的信息</a></p>
       <p>© 2026</p>
     </footer>
 

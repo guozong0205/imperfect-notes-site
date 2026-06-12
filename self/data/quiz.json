@@ -1,0 +1,69 @@
+{
+  "tiePrompt": "這一組有點難分，你自己感覺更像哪邊？",
+  "questions": [
+    {
+      "dimension": "E/I",
+      "question": "忙完一整週的週五晚上，你更想——",
+      "a": "約上喜歡的人，見面聊聊（E）",
+      "b": "誰也不見，一個人安靜待著（I）",
+      "aValue": "E",
+      "bValue": "I"
+    },
+    {
+      "dimension": "E/I",
+      "question": "在一群不太熟的人中間，你通常——",
+      "a": "聊著聊著就熱絡起來（E）",
+      "b": "大部分時間在聽（I）",
+      "aValue": "E",
+      "bValue": "I"
+    },
+    {
+      "dimension": "S/N",
+      "question": "聽別人講一個新計劃時，你先注意到的是——",
+      "a": "具體怎麼做，行不行得通（S）",
+      "b": "這件事背後還有什麼可能（N）",
+      "aValue": "S",
+      "bValue": "N"
+    },
+    {
+      "dimension": "S/N",
+      "question": "你更願意相信——",
+      "a": "自己親身驗證過的經驗（S）",
+      "b": "某個突然冒出來的直覺（N）",
+      "aValue": "S",
+      "bValue": "N"
+    },
+    {
+      "dimension": "T/F",
+      "question": "朋友難過地來找你，你的第一反應是——",
+      "a": "幫 TA 理清問題出在哪（T）",
+      "b": "先什麼都不說，陪 TA 待一會兒（F）",
+      "aValue": "T",
+      "bValue": "F"
+    },
+    {
+      "dimension": "T/F",
+      "question": "做一個重要決定時，你更難忽略的是——",
+      "a": "道理上說不通（T）",
+      "b": "心裡過不去（F）",
+      "aValue": "T",
+      "bValue": "F"
+    },
+    {
+      "dimension": "J/P",
+      "question": "出發旅行之前，你——",
+      "a": "把大致行程排好才安心（J）",
+      "b": "到了再說，更有意思（P）",
+      "aValue": "J",
+      "bValue": "P"
+    },
+    {
+      "dimension": "J/P",
+      "question": "面對一個截止日期，你通常——",
+      "a": "提前一點一點做完（J）",
+      "b": "最後關頭一口氣爆發（P）",
+      "aValue": "J",
+      "bValue": "P"
+    }
+  ]
+}
