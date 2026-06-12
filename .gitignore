@@ -2,3 +2,8 @@
 .claude/
 screenshots/
 assets/audio/
+output/
+self/tools/
+self/S2T_REVIEW_TABLE.md
+self/CONTENT_LIBRARY_DIFF_REPORT.md
+self/DEEP_CONTENT_LIBRARY_DIFF_REPORT.md

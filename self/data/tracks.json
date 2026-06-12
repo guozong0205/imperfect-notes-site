@@ -1,0 +1,37 @@
+{
+  "self": {
+    "epId": "15",
+    "title": "慢一點也沒關係",
+    "reason": "認識自己這件事，急不來。這首曲子想陪你練習的，正是慢一點，也沒關係。",
+    "cover": "../../assets/covers/ep15.jpg",
+    "src": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep15.mp3"
+  },
+  "relation": {
+    "epId": "13",
+    "title": "記得某個人，但不再悲傷",
+    "reason": "關係裡的那些來來回回，都會留下溫柔的痕跡。這首曲子，陪你安靜地想一想那些人。",
+    "cover": "../../assets/covers/ep13.jpg",
+    "src": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep13.mp3"
+  },
+  "career": {
+    "epId": "14",
+    "title": "回家的路，很長",
+    "reason": "路長不代表走錯了。這首曲子，寫給還在路上的你。",
+    "cover": "../../assets/covers/ep14.jpg",
+    "src": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep14.mp3"
+  },
+  "resource": {
+    "epId": "12",
+    "title": "我們還沒有結束",
+    "reason": "你和你擁有的一切，都還在生長。這首曲子想說的是：我們還沒有結束。",
+    "cover": "../../assets/covers/ep12.jpg",
+    "src": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep12.mp3"
+  },
+  "phase": {
+    "epId": "15",
+    "title": "慢一點也沒關係",
+    "reason": "不知道現在算什麼階段，也沒關係。這首曲子，陪你在原地站一會兒。",
+    "cover": "../../assets/covers/ep15.jpg",
+    "src": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep15.mp3"
+  }
+}
