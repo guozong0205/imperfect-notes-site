@@ -282,8 +282,6 @@ async function buildPayload() {
     direction: state.direction,
     createdAt: new Date().toISOString(),
     degraded: chart.degraded,
-    _engine: chart,
-    _axes: axes,
     keywords: profile.keywords,
     summary: profile.summary,
     modules: buildModules(profile, direction, state.direction, selected, copyData),
