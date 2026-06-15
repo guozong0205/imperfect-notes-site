@@ -483,23 +483,31 @@ function timeIndexFromParts(parts) {
 }
 
 function palaceMainStars(palace) {
-  return palace.majorStars.map((star) => star.name);
+  return palace?.majorStars?.map((star) => star.name) ?? [];
+}
+
+function oppositePalace(astrolabe, palaceName) {
+  try {
+    return astrolabe.surroundedPalaces(palaceName)?.opposite ?? null;
+  } catch {
+    return null;
+  }
 }
 
 function getSoulStars(astrolabe) {
   const soulPalace = astrolabe.palace('命宮');
-  if (soulPalace.majorStars.length > 0) {
+  if (soulPalace?.majorStars.length > 0) {
     return {
       stars: palaceMainStars(soulPalace),
       borrowedFromOpposite: false,
       oppositePalace: null,
     };
   }
-  const opposite = soulPalace.surroundedPalaces().opposite;
+  const opposite = oppositePalace(astrolabe, '命宮');
   return {
     stars: palaceMainStars(opposite),
     borrowedFromOpposite: true,
-    oppositePalace: `${opposite.name}(${opposite.earthlyBranch})`,
+    oppositePalace: opposite ? `${opposite.name}(${opposite.earthlyBranch})` : null,
   };
 }
 
@@ -539,6 +547,7 @@ function buildZiwei(birth, timing) {
   const astrolabe = astro.bySolar(chartDate, timeIndex, normalizeGender(birth.gender), true, 'zh-TW');
   const horoscope = astrolabe.horoscope(REFERENCE_DATE);
   const soulStars = getSoulStars(astrolabe);
+  const soulPalace = astrolabe.palace('命宮');
   const currentDecadalPalace = astrolabe.palaces[horoscope.decadal.index];
   const yearlyMutagens = Object.fromEntries(
     MUTAGEN_LABELS.map((label, index) => {
@@ -561,8 +570,8 @@ function buildZiwei(birth, timing) {
     timeRange: astrolabe.timeRange,
     chineseDate: astrolabe.chineseDate,
     soulPalace: {
-      palace: astrolabe.palace('命宮').name,
-      earthlyBranch: astrolabe.palace('命宮').earthlyBranch,
+      palace: soulPalace?.name ?? '命宮',
+      earthlyBranch: soulPalace?.earthlyBranch ?? null,
       mainStars: soulStars.stars,
       borrowedFromOpposite: soulStars.borrowedFromOpposite,
       oppositePalace: soulStars.oppositePalace,
