@@ -193,10 +193,12 @@ function fragmentBody(ids, copyData) {
     .join("\n\n");
 }
 
-function buildModuleSix(profile, direction, directionKey) {
+function buildModuleSix(profile, directionKey, phaseBody = "") {
+  const deepenBody = profile.m6_deepen[directionKey];
+  const body = [phaseBody, deepenBody].filter(Boolean).join("\n\n");
   const module = {
     title: reportModuleTitles.m6,
-    body: `${direction.m6_phase}\n\n${profile.m6_deepen[directionKey]}`
+    body
   };
   if (directionKey === "career" && profile.career_fit && profile.career_avoid) {
     module.deepSection = {
@@ -240,7 +242,6 @@ function buildModules(profile, direction, directionKey, engineSelection = null, 
   const m1Body = engineSelection && copyData ? fragmentBody(engineSelection.m1, copyData) || profile.m1_core : profile.m1_core;
   const m2Body = engineSelection && copyData && engineSelection.m2.length ? fragmentBody(engineSelection.m2, copyData) : profile.m2_forces;
   const phaseBody = engineSelection && copyData ? fragmentBody(engineSelection.phase, copyData) : "";
-  const m7Body = [phaseBody, direction.m7_actions.join("\n")].filter(Boolean).join("\n\n");
 
   return [
     { title: reportModuleTitles.m1, body: m1Body },
@@ -248,8 +249,8 @@ function buildModules(profile, direction, directionKey, engineSelection = null, 
     { title: reportModuleTitles.m3, body: profile.m3_gifts },
     { title: reportModuleTitles.m4, body: profile.m4_relation },
     { title: reportModuleTitles.m5, body: profile.m5_career },
-    buildModuleSix(profile, direction, directionKey),
-    { title: reportModuleTitles.m7, body: m7Body }
+    buildModuleSix(profile, directionKey, phaseBody),
+    { title: reportModuleTitles.m7, body: direction.m7_actions.join("\n") }
   ];
 }
 
@@ -270,6 +271,7 @@ async function buildPayload() {
   });
   const axes = engine.computeAxes(chart, state.mbti);
   const selected = engine.selectFragments(axes);
+  const phaseText = fragmentBody(selected.phase, copyData);
   const track = trackData[state.direction] || trackData.self;
   return {
     nickname: state.nickname || null,
@@ -282,6 +284,7 @@ async function buildPayload() {
     direction: state.direction,
     createdAt: new Date().toISOString(),
     degraded: chart.degraded,
+    phaseText,
     keywords: profile.keywords,
     summary: profile.summary,
     modules: buildModules(profile, direction, state.direction, selected, copyData),
@@ -301,7 +304,12 @@ function buildPayloadForDirection(payload, nextDirection) {
     createdAt: new Date().toISOString(),
     keywords: profile.keywords,
     summary: profile.summary,
-    modules: payload.modules.map((module, index) => (index === 5 ? buildModuleSix(profile, direction, nextDirection) : module)),
+    phaseText: payload.phaseText || "",
+    modules: payload.modules.map((module, index) => {
+      if (index === 5) return buildModuleSix(profile, nextDirection, payload.phaseText || "");
+      if (index === 6) return { title: reportModuleTitles.m7, body: direction.m7_actions.join("\n") };
+      return module;
+    }),
     track: trackData[nextDirection] || trackData.self
   };
 }
