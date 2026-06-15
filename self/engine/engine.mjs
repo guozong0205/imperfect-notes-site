@@ -740,19 +740,16 @@ function pick(items, limit) {
 
 export function selectFragments(axisResults) {
   const baseAxes = axisResults.filter((item) => item.axis >= 1 && item.axis <= 5);
-  const aItems = baseAxes.filter((item) => item.verdict === 'A').sort(byStrengthThenAxis);
-  const cItems = baseAxes.filter((item) => item.verdict === 'C').sort(byStrengthThenAxis);
-  const m1Items = [...aItems, ...cItems.filter((item) => !aItems.some((aItem) => aItem.axis === item.axis))].slice(0, 3);
-  const m2Items = baseAxes.filter((item) => item.verdict === 'B').sort(byStrengthThenAxis).slice(0, 2);
-  const axis3 = axisResults.find((item) => item.axis === 3);
+  const m1Items = baseAxes.filter((item) => item.target === 'm1').sort(byStrengthThenAxis).slice(0, 3);
+  const m2Items = baseAxes.filter((item) => item.target === 'm2').sort(byStrengthThenAxis).slice(0, 1);
   const phase = axisResults.find((item) => item.axis === 6);
 
   return {
     m1: m1Items.map((item) => item.fragmentId),
     m2: m2Items.map((item) => item.fragmentId),
     m2Fallback: m2Items.length === 0 ? 'profile.m2_forces' : null,
-    m3: axis3 && ['A', 'C'].includes(axis3.verdict) ? [axis3.fragmentId] : [],
-    m3Fallback: !axis3 || !['A', 'C'].includes(axis3.verdict) ? 'profile.m3_gifts' : null,
+    m3: [],
+    m3Fallback: 'profile.m3_gifts',
     phase: phase ? [phase.fragmentId] : [],
   };
 }
