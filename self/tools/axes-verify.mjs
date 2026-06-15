@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { computeAxes, computeChart, computeWealthCareer, selectFragments } from '../engine/engine.mjs';
+import { computeAxes, computeChart, computeRelationship, computeWealthCareer, selectFragments } from '../engine/engine.mjs';
 
 const copy = JSON.parse(fs.readFileSync(new URL('../data/engine-copy.json', import.meta.url), 'utf8'));
 
@@ -104,6 +104,58 @@ const M5_CASES = [
   },
 ];
 
+const M4_CASES = [
+  {
+    id: 'P5b-female-official',
+    note: '女：取官殺',
+    birth: {
+      birthDate: '1995-11-03',
+      birthTime: '23:30',
+      birthPlace: '上海',
+      longitude: 121.5,
+      gender: '女',
+    },
+    mbti: 'INFJ',
+  },
+  {
+    id: 'P5b-male-wealth',
+    note: '男：取財星',
+    birth: {
+      birthDate: '1980-01-03',
+      birthTime: '14:30',
+      birthPlace: '北京',
+      longitude: 116.4,
+      gender: '男',
+    },
+    mbti: 'INFJ',
+  },
+  {
+    id: 'P5b-na-combined',
+    note: 'na：官殺+財星合併，不開天窗',
+    birth: {
+      birthDate: '1980-01-03',
+      birthTime: '14:30',
+      birthPlace: '北京',
+      longitude: 116.4,
+      gender: 'na',
+    },
+    mbti: 'INFJ',
+  },
+  {
+    id: 'P5b-degraded',
+    note: '時辰未知降級，只用八字軌',
+    birth: {
+      birthDate: '1988-02-20',
+      birthTime: null,
+      birthPlace: '廣州',
+      longitude: 113.3,
+      gender: '女',
+      timeUnknown: true,
+    },
+    mbti: 'INFJ',
+  },
+];
+
 function firstSentence(fragmentId) {
   const text = copy.fragments[fragmentId];
   if (!text) return '[missing copy]';
@@ -130,6 +182,13 @@ function m5SelectedWithCopy(result) {
       fragmentId,
       firstSentence: firstSentence(fragmentId),
     }));
+}
+
+function m4SelectedWithCopy(result) {
+  return [result.toneId, result.pullId, result.modId].filter(Boolean).map((fragmentId) => ({
+    fragmentId,
+    firstSentence: firstSentence(fragmentId),
+  }));
 }
 
 for (const testCase of CASES) {
@@ -213,6 +272,37 @@ for (const testCase of M5_CASES) {
           : null,
         result,
         selectedCopy: m5SelectedWithCopy(result),
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+console.log('\n===== P5b m4 relationship verification =====');
+for (const testCase of M4_CASES) {
+  const chart = computeChart(testCase.birth);
+  const result = computeRelationship(chart, testCase.mbti, testCase.birth.gender);
+
+  console.log(`\n--- ${testCase.id} · ${testCase.note} ---`);
+  console.log(
+    JSON.stringify(
+      {
+        input: chart.input,
+        degraded: chart.degraded,
+        baziPillars: Object.fromEntries(Object.entries(chart.bazi.pillars).map(([key, pillar]) => [key, pillar.ganzhi])),
+        baziStrength: chart.bazi.strength.verdict,
+        dayBranch: chart.bazi.pillars.day.zhi,
+        tenGodCounts: chart.bazi.tenGodCounts,
+        ziweiPalaces: chart.ziwei
+          ? {
+              spouse: palaceSummary(chart, '夫妻'),
+              career: palaceSummary(chart, '官祿'),
+            }
+          : null,
+        genderUsedForSelection: testCase.birth.gender,
+        result,
+        selectedCopy: m4SelectedWithCopy(result),
       },
       null,
       2,

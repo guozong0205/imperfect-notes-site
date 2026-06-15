@@ -180,6 +180,40 @@ const M5_WEALTH = {
   },
 };
 
+const M4_TONE = {
+  steady: {
+    id: 'm4.tone.steady',
+    stars: ['天府', '天相', '天同', '太陰'],
+  },
+  intense: {
+    id: 'm4.tone.intense',
+    stars: ['七殺', '破軍', '貪狼', '廉貞'],
+  },
+  slow: {
+    id: 'm4.tone.slow',
+    stars: ['天機', '天梁', '巨門'],
+  },
+  independent: {
+    id: 'm4.tone.independent',
+    stars: ['紫微', '武曲', '太陽'],
+  },
+};
+
+const BRANCH_CLASH = {
+  子: '午',
+  午: '子',
+  丑: '未',
+  未: '丑',
+  寅: '申',
+  申: '寅',
+  卯: '酉',
+  酉: '卯',
+  辰: '戌',
+  戌: '辰',
+  巳: '亥',
+  亥: '巳',
+};
+
 const STRENGTH_WEIGHT = {
   強: 2,
   弱: 1,
@@ -650,6 +684,13 @@ function getCareerPalaceStars(chart) {
   return getPalace(chart, '夫妻')?.mainStars ?? [];
 }
 
+function getSpousePalaceStars(chart) {
+  const spouse = getPalace(chart, '夫妻');
+  if (!spouse) return null;
+  if (spouse.mainStars.length > 0) return spouse.mainStars;
+  return getPalace(chart, '官祿')?.mainStars ?? [];
+}
+
 function classifyStars(stars, modes, fallback = null) {
   if (!stars?.length) return fallback ? { mode: fallback, score: 1 } : null;
   const scores = Object.fromEntries(Object.keys(modes).map((mode) => [mode, 0]));
@@ -739,6 +780,99 @@ export function computeWealthCareer(chart, mbti) {
     bearId,
     leakId: peerCount >= 3 ? 'm5.leak' : null,
     split: career.split || wealth.split,
+  };
+}
+
+function baziRelationshipToneSignal(chart) {
+  const dayPillar = chart.bazi.pillars.day;
+  const mainQi = dayPillar.hiddenGan[0];
+  const mainElement = GAN_ELEMENT[mainQi];
+  const branches = Object.values(chart.bazi.pillars)
+    .map((pillar) => pillar.zhi)
+    .filter((branch) => branch !== dayPillar.zhi);
+  const hasClash = branches.includes(BRANCH_CLASH[dayPillar.zhi]);
+
+  if (hasClash || mainElement === '火' || mainElement === '木') return { mode: 'intense', score: hasClash ? 2 : 1 };
+  if (mainElement === '土' || mainElement === '金') return { mode: 'steady', score: 1 };
+  return { mode: 'slow', score: 1 };
+}
+
+function ziweiRelationshipToneSignal(chart) {
+  if (chart.degraded) return null;
+  return classifyStars(getSpousePalaceStars(chart), M4_TONE);
+}
+
+function normalizeRelationshipGender(gender) {
+  if (gender === 'f' || gender === '女') return '女';
+  if (gender === 'm' || gender === '男') return '男';
+  return 'na';
+}
+
+function spouseGodsForGender(gender) {
+  const normalized = normalizeRelationshipGender(gender);
+  if (normalized === '女') return { normal: '正官', side: '七殺' };
+  if (normalized === '男') return { normal: '正財', side: '偏財' };
+  return { normal: ['正官', '正財'], side: ['七殺', '偏財'] };
+}
+
+function countGod(counts, gods) {
+  const list = Array.isArray(gods) ? gods : [gods];
+  return countSet(counts, list);
+}
+
+function hasGod(gods, target) {
+  const list = Array.isArray(gods) ? gods : [gods];
+  return list.some((god) => god === target);
+}
+
+function computeRelationshipPull(chart, gender) {
+  const counts = chart.bazi.tenGodCounts;
+  const pillars = Object.values(chart.bazi.pillars);
+  const stemGods = pillars.map((pillar) => pillar.stemTenGod).filter(Boolean);
+  const hiddenGods = pillars.flatMap((pillar) => pillar.hiddenTenGod);
+  const branches = pillars.map((pillar) => pillar.zhi);
+  const peachCount = branches.filter((branch) => ['子', '午', '卯', '酉'].includes(branch)).length;
+  const gods = spouseGodsForGender(gender);
+  const normalCount = countGod(counts, gods.normal);
+  const sideCount = countGod(counts, gods.side);
+  const total = normalCount + sideCount;
+  const rooted = hiddenGods.some((god) => hasGod(gods.normal, god) || hasGod(gods.side, god));
+  const stemmed = stemGods.some((god) => hasGod(gods.normal, god) || hasGod(gods.side, god));
+  const mixed = normalCount > 0 && sideCount > 0;
+  const strong = total >= 2 && rooted;
+  const sideHeavy = sideCount > normalCount && sideCount > 0;
+  const peachHeavy = peachCount >= 2;
+  const normalizedGender = normalizeRelationshipGender(gender);
+  let pullId = 'm4.pull.active';
+
+  if (strong && normalCount >= sideCount && normalCount > 0) pullId = 'm4.pull.stable';
+  if (sideHeavy || mixed || peachHeavy) pullId = 'm4.pull.intense';
+  if (total === 0 || (!stemmed && !rooted)) pullId = 'm4.pull.active';
+  if (normalizedGender === 'na' && total <= 1 && !peachHeavy) pullId = 'm4.pull.active';
+
+  return {
+    pullId,
+    mixed,
+    strong,
+    total,
+  };
+}
+
+export function computeRelationship(chart, mbti, gender = 'na') {
+  void mbti;
+  const tone = mergeSignals(ziweiRelationshipToneSignal(chart), baziRelationshipToneSignal(chart));
+  const pull = computeRelationshipPull(chart, gender);
+  let modId = null;
+  if (pull.mixed) {
+    modId = 'm4.mod.tangle';
+  } else if (pull.strong && chart.bazi.strength.verdict === '弱') {
+    modId = 'm4.mod.drain';
+  }
+
+  return {
+    toneId: M4_TONE[tone.mode].id,
+    pullId: pull.pullId,
+    modId,
   };
 }
 

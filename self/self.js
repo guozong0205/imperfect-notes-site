@@ -206,6 +206,12 @@ function buildModuleFive(selection, copyData, fallback) {
   return fragmentBody(ids, copyData) || fallback;
 }
 
+function buildModuleFour(selection, copyData, fallback) {
+  if (!selection || !copyData) return fallback;
+  const ids = [selection.toneId, selection.pullId, selection.modId].filter(Boolean);
+  return fragmentBody(ids, copyData) || fallback;
+}
+
 function buildModuleSix(phaseBody = "") {
   return {
     title: reportModuleTitles.m6,
@@ -257,9 +263,10 @@ function buildDirectionDeepModule(profile, direction, directionKey) {
   return module;
 }
 
-function buildModules(profile, direction, directionKey, engineSelection = null, copyData = null, wealthCareer = null) {
+function buildModules(profile, direction, directionKey, engineSelection = null, copyData = null, wealthCareer = null, relationship = null) {
   const m1Body = engineSelection && copyData ? fragmentBody(engineSelection.m1, copyData) || profile.m1_core : profile.m1_core;
   const m2Body = engineSelection && copyData && engineSelection.m2.length ? fragmentBody(engineSelection.m2, copyData) : profile.m2_forces;
+  const m4Body = buildModuleFour(relationship, copyData, profile.m4_relation);
   const m5Body = buildModuleFive(wealthCareer, copyData, profile.m5_career);
   const phaseBody = engineSelection && copyData ? fragmentBody(engineSelection.phase, copyData) : "";
 
@@ -267,7 +274,7 @@ function buildModules(profile, direction, directionKey, engineSelection = null, 
     { title: reportModuleTitles.m1, body: m1Body },
     { title: reportModuleTitles.m2, body: m2Body },
     { title: reportModuleTitles.m3, body: profile.m3_gifts },
-    { title: reportModuleTitles.m4, body: profile.m4_relation },
+    { title: reportModuleTitles.m4, body: m4Body },
     { title: reportModuleTitles.m5, body: m5Body },
     buildModuleSix(phaseBody),
     buildDirectionDeepModule(profile, direction, directionKey),
@@ -293,6 +300,7 @@ async function buildPayload() {
   const axes = engine.computeAxes(chart, state.mbti);
   const selected = engine.selectFragments(axes);
   const wealthCareer = engine.computeWealthCareer(chart, state.mbti);
+  const relationship = engine.computeRelationship(chart, state.mbti, state.gender || "na");
   const phaseText = fragmentBody(selected.phase, copyData);
   const track = trackData[state.direction] || trackData.self;
   return {
@@ -307,10 +315,11 @@ async function buildPayload() {
     createdAt: new Date().toISOString(),
     degraded: chart.degraded,
     phaseText,
+    m4Selection: relationship,
     m5Selection: wealthCareer,
     keywords: profile.keywords,
     summary: profile.summary,
-    modules: buildModules(profile, direction, state.direction, selected, copyData, wealthCareer),
+    modules: buildModules(profile, direction, state.direction, selected, copyData, wealthCareer, relationship),
     track
   };
 }

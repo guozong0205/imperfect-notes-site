@@ -1,4 +1,4 @@
-import { computeAxes, computeChart, computeWealthCareer, selectFragments } from '../engine/engine.mjs';
+import { computeAxes, computeChart, computeRelationship, computeWealthCareer, selectFragments } from '../engine/engine.mjs';
 
 const PLACES = [
   { birthPlace: '北京', longitude: 116.4 },
@@ -7,7 +7,7 @@ const PLACES = [
   { birthPlace: '大連', longitude: 121.6 },
 ];
 const TIMES = ['00:30', '05:30', '11:30', '14:30', '20:30', '23:30'];
-const GENDERS = ['男', '女'];
+const GENDERS = ['男', '女', 'na'];
 const MBTIS = ['INFJ', 'ESTP', 'INFP', 'ENTJ'];
 
 const cases = [];
@@ -36,6 +36,7 @@ for (const item of cases) {
     const axes = computeAxes(chart, item.mbti);
     selectFragments(axes);
     computeWealthCareer(chart, item.mbti);
+    computeRelationship(chart, item.mbti, item.gender);
   } catch (error) {
     failures.push({
       birthDate: item.birthDate,
