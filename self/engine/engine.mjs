@@ -143,6 +143,43 @@ const PHASE_BY_MUTAGEN = {
   忌: 'ax6.zeren',
 };
 
+const M5_CAREER = {
+  open: {
+    id: 'm5.career.open',
+    stars: ['七殺', '破軍', '貪狼', '廉貞'],
+    gods: ['比肩', '劫財', '七殺', '傷官'],
+  },
+  steady: {
+    id: 'm5.career.steady',
+    stars: ['天府', '天相', '武曲', '太陰', '天梁', '紫微'],
+    gods: ['正官', '正印', '正財'],
+  },
+  express: {
+    id: 'm5.career.express',
+    stars: ['太陽', '巨門', '天機', '天同'],
+    gods: ['食神', '傷官', '偏印'],
+  },
+};
+
+const M5_WEALTH = {
+  steady: {
+    id: 'm5.wealth.steady',
+    stars: ['武曲', '天府', '太陰'],
+  },
+  chance: {
+    id: 'm5.wealth.chance',
+    stars: ['貪狼', '破軍', '廉貞'],
+  },
+  talent: {
+    id: 'm5.wealth.talent',
+    stars: ['巨門', '天機'],
+  },
+  meaning: {
+    id: 'm5.wealth.meaning',
+    stars: [],
+  },
+};
+
 const STRENGTH_WEIGHT = {
   強: 2,
   弱: 1,
@@ -581,6 +618,119 @@ export function computeChart(birth) {
 
 function countSet(counts, set) {
   return set.reduce((sum, item) => sum + (counts[item] ?? 0), 0);
+}
+
+function topSignal(scores, fallback) {
+  return Object.entries(scores).reduce(
+    (best, [mode, score]) => {
+      if (score > best.score) return { mode, score };
+      return best;
+    },
+    { mode: fallback, score: scores[fallback] ?? 0 },
+  );
+}
+
+function getPalace(chart, name) {
+  return chart.ziwei?.palaces.find((palace) => palace.name === name) ?? null;
+}
+
+function getCareerPalaceStars(chart) {
+  const career = getPalace(chart, '官祿');
+  if (!career) return null;
+  if (career.mainStars.length > 0) return career.mainStars;
+  return getPalace(chart, '夫妻')?.mainStars ?? [];
+}
+
+function classifyStars(stars, modes, fallback = null) {
+  if (!stars?.length) return fallback ? { mode: fallback, score: 1 } : null;
+  const scores = Object.fromEntries(Object.keys(modes).map((mode) => [mode, 0]));
+  for (const star of stars) {
+    for (const [mode, config] of Object.entries(modes)) {
+      if (config.stars.includes(star)) scores[mode] += 1;
+    }
+  }
+  const best = topSignal(scores, fallback ?? Object.keys(modes)[0]);
+  if (best.score > 0) return best;
+  return fallback ? { mode: fallback, score: 1 } : null;
+}
+
+function baziCareerSignal(chart) {
+  const scores = Object.fromEntries(
+    Object.entries(M5_CAREER).map(([mode, config]) => [mode, countSet(chart.bazi.tenGodCounts, config.gods)]),
+  );
+  const best = topSignal(scores, 'steady');
+  return best.score > 0 ? best : { mode: 'steady', score: 1 };
+}
+
+function baziWealthSignal(chart) {
+  const counts = chart.bazi.tenGodCounts;
+  const pillars = Object.values(chart.bazi.pillars);
+  const stemGods = pillars.map((pillar) => pillar.stemTenGod).filter(Boolean);
+  const hiddenGods = pillars.flatMap((pillar) => pillar.hiddenTenGod);
+  const zhengCai = counts.正財 ?? 0;
+  const pianCai = counts.偏財 ?? 0;
+  const cai = zhengCai + pianCai;
+  const shiShang = (counts.食神 ?? 0) + (counts.傷官 ?? 0);
+  const yin = (counts.正印 ?? 0) + (counts.偏印 ?? 0);
+  const hasCaiRoot = hiddenGods.some((god) => god === '正財' || god === '偏財');
+  const hasZhengCaiRoot = hiddenGods.includes('正財');
+  const hasCaiStem = stemGods.some((god) => god === '正財' || god === '偏財');
+  const scores = {
+    steady: zhengCai * 2 + (hasZhengCaiRoot ? 1 : 0) + (zhengCai >= pianCai && zhengCai > 0 && hasCaiRoot ? 2 : 0),
+    chance: pianCai * 2 + (stemGods.includes('偏財') ? 1 : 0) + (hasCaiStem && !hasCaiRoot ? 1 : 0),
+    talent: shiShang > 0 && cai > 0 ? shiShang + cai + 1 : 0,
+    meaning: (yin >= 3 ? 3 : 0) + (cai === 0 ? 2 : 0) + (!hasCaiStem ? 1 : 0) + (yin > cai ? 1 : 0),
+  };
+  const best = topSignal(scores, 'meaning');
+  return best.score > 0 ? best : { mode: 'meaning', score: 1 };
+}
+
+function ziweiCareerSignal(chart) {
+  if (chart.degraded) return null;
+  return classifyStars(getCareerPalaceStars(chart), M5_CAREER);
+}
+
+function ziweiWealthSignal(chart) {
+  if (chart.degraded) return null;
+  const palace = getPalace(chart, '財帛');
+  if (!palace || palace.mainStars.length === 0) return { mode: 'meaning', score: 1 };
+  const scores = Object.fromEntries(Object.keys(M5_WEALTH).map((mode) => [mode, 0]));
+  for (const star of palace.mainStars) {
+    for (const [mode, config] of Object.entries(M5_WEALTH)) {
+      if (config.stars.includes(star)) scores[mode] += 1;
+    }
+  }
+  const hasWealthLu = chart.ziwei.currentYearlyMutagens.placements.祿.placements.some((placement) => placement.palace === '財帛');
+  if (hasWealthLu) scores.talent += 1;
+  const best = topSignal(scores, 'meaning');
+  return best.score > 0 ? best : { mode: 'meaning', score: 1 };
+}
+
+function mergeSignals(ziweiSignal, baziSignal) {
+  if (!ziweiSignal) return { mode: baziSignal.mode, split: false };
+  if (ziweiSignal.mode === baziSignal.mode) return { mode: ziweiSignal.mode, split: false };
+  return {
+    mode: ziweiSignal.score > baziSignal.score ? ziweiSignal.mode : baziSignal.mode,
+    split: true,
+  };
+}
+
+export function computeWealthCareer(chart, mbti) {
+  void mbti;
+  const career = mergeSignals(ziweiCareerSignal(chart), baziCareerSignal(chart));
+  const wealth = mergeSignals(ziweiWealthSignal(chart), baziWealthSignal(chart));
+  const counts = chart.bazi.tenGodCounts;
+  const wealthCount = (counts.正財 ?? 0) + (counts.偏財 ?? 0);
+  const peerCount = (counts.比肩 ?? 0) + (counts.劫財 ?? 0);
+  const bearId = chart.bazi.strength.verdict === '弱' && wealthCount >= 2 ? 'm5.bear.weak' : 'm5.bear.strong';
+
+  return {
+    careerId: M5_CAREER[career.mode].id,
+    wealthId: M5_WEALTH[wealth.mode].id,
+    bearId,
+    leakId: peerCount >= 3 ? 'm5.leak' : null,
+    split: career.split || wealth.split,
+  };
 }
 
 function signPole(score) {

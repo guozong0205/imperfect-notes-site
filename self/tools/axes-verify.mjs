@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { computeAxes, computeChart, selectFragments } from '../engine/engine.mjs';
+import { computeAxes, computeChart, computeWealthCareer, selectFragments } from '../engine/engine.mjs';
 
 const copy = JSON.parse(fs.readFileSync(new URL('../data/engine-copy.json', import.meta.url), 'utf8'));
 
@@ -40,6 +40,70 @@ const CASES = [
   },
 ];
 
+const M5_CASES = [
+  {
+    id: 'P5a-strong-split',
+    note: '身強/雙軌分歧',
+    birth: {
+      birthDate: '1980-01-03',
+      birthTime: '02:30',
+      birthPlace: '北京',
+      longitude: 116.4,
+      gender: '男',
+    },
+    mbti: 'INFJ',
+  },
+  {
+    id: 'P5a-weak-bear',
+    note: '身弱財旺',
+    birth: {
+      birthDate: '1980-05-03',
+      birthTime: '02:30',
+      birthPlace: '北京',
+      longitude: 116.4,
+      gender: '男',
+    },
+    mbti: 'INFJ',
+  },
+  {
+    id: 'P5a-leak',
+    note: '比劫旺漏財',
+    birth: {
+      birthDate: '1980-01-03',
+      birthTime: '14:30',
+      birthPlace: '北京',
+      longitude: 116.4,
+      gender: '男',
+    },
+    mbti: 'INFJ',
+  },
+  {
+    id: 'P5a-empty-career-palace',
+    note: '官祿空宮借夫妻宮',
+    birth: {
+      birthDate: '1980-01-17',
+      birthTime: '08:30',
+      birthPlace: '北京',
+      longitude: 116.4,
+      gender: '男',
+    },
+    mbti: 'INFJ',
+  },
+  {
+    id: 'P5a-degraded',
+    note: '時辰未知降級，只用八字軌',
+    birth: {
+      birthDate: '1988-02-20',
+      birthTime: null,
+      birthPlace: '廣州',
+      longitude: 113.3,
+      gender: '女',
+      timeUnknown: true,
+    },
+    mbti: 'INFJ',
+  },
+];
+
 function firstSentence(fragmentId) {
   const text = copy.fragments[fragmentId];
   if (!text) return '[missing copy]';
@@ -52,6 +116,20 @@ function selectedWithCopy(ids) {
     fragmentId,
     firstSentence: firstSentence(fragmentId),
   }));
+}
+
+function palaceSummary(chart, name) {
+  const palace = chart.ziwei?.palaces.find((item) => item.name === name);
+  return palace ? { name: palace.name, mainStars: palace.mainStars } : null;
+}
+
+function m5SelectedWithCopy(result) {
+  return [result.careerId, result.wealthId, result.split ? 'm5.split' : null, result.bearId, result.leakId]
+    .filter(Boolean)
+    .map((fragmentId) => ({
+      fragmentId,
+      firstSentence: firstSentence(fragmentId),
+    }));
 }
 
 for (const testCase of CASES) {
@@ -110,4 +188,34 @@ for (const testCase of CASES) {
       ),
     );
   }
+}
+
+console.log('\n===== P5a m5 wealth/career verification =====');
+for (const testCase of M5_CASES) {
+  const chart = computeChart(testCase.birth);
+  const result = computeWealthCareer(chart, testCase.mbti);
+
+  console.log(`\n--- ${testCase.id} · ${testCase.note} ---`);
+  console.log(
+    JSON.stringify(
+      {
+        input: chart.input,
+        degraded: chart.degraded,
+        baziPillars: Object.fromEntries(Object.entries(chart.bazi.pillars).map(([key, pillar]) => [key, pillar.ganzhi])),
+        baziStrength: chart.bazi.strength.verdict,
+        tenGodCounts: chart.bazi.tenGodCounts,
+        ziweiPalaces: chart.ziwei
+          ? {
+              career: palaceSummary(chart, '官祿'),
+              spouse: palaceSummary(chart, '夫妻'),
+              wealth: palaceSummary(chart, '財帛'),
+            }
+          : null,
+        result,
+        selectedCopy: m5SelectedWithCopy(result),
+      },
+      null,
+      2,
+    ),
+  );
 }
