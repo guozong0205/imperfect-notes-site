@@ -52,6 +52,7 @@ const reportModuleTitles = {
   m4: "你在關係裡的樣子",
   m5: "你和事業、資源的關係",
   m6: "此刻的你，走到了哪裡",
+  m6Deep: "順著你選的方向，再看深一點",
   m7: "三件可以試試的小事"
 };
 
@@ -205,11 +206,17 @@ function buildModuleFive(selection, copyData, fallback) {
   return fragmentBody(ids, copyData) || fallback;
 }
 
-function buildModuleSix(profile, directionKey, phaseBody = "") {
-  const deepenBody = profile.m6_deepen[directionKey];
-  const body = [phaseBody, deepenBody].filter(Boolean).join("\n\n");
-  const module = {
+function buildModuleSix(phaseBody = "") {
+  return {
     title: reportModuleTitles.m6,
+    body: phaseBody
+  };
+}
+
+function buildDirectionDeepModule(profile, direction, directionKey) {
+  const body = [direction.m6_phase, profile.m6_deepen[directionKey]].filter(Boolean).join("\n\n");
+  const module = {
+    title: reportModuleTitles.m6Deep,
     body
   };
   if (directionKey === "career" && profile.career_fit && profile.career_avoid) {
@@ -262,7 +269,8 @@ function buildModules(profile, direction, directionKey, engineSelection = null, 
     { title: reportModuleTitles.m3, body: profile.m3_gifts },
     { title: reportModuleTitles.m4, body: profile.m4_relation },
     { title: reportModuleTitles.m5, body: m5Body },
-    buildModuleSix(profile, directionKey, phaseBody),
+    buildModuleSix(phaseBody),
+    buildDirectionDeepModule(profile, direction, directionKey),
     { title: reportModuleTitles.m7, body: direction.m7_actions.join("\n") }
   ];
 }
@@ -313,6 +321,7 @@ function buildPayloadForDirection(payload, nextDirection) {
   if (!profile || !direction) {
     throw new Error("Report content not found.");
   }
+  const fixedModules = payload.modules.slice(0, 6);
   return {
     ...payload,
     direction: nextDirection,
@@ -320,11 +329,11 @@ function buildPayloadForDirection(payload, nextDirection) {
     keywords: profile.keywords,
     summary: profile.summary,
     phaseText: payload.phaseText || "",
-    modules: payload.modules.map((module, index) => {
-      if (index === 5) return buildModuleSix(profile, nextDirection, payload.phaseText || "");
-      if (index === 6) return { title: reportModuleTitles.m7, body: direction.m7_actions.join("\n") };
-      return module;
-    }),
+    modules: [
+      ...fixedModules,
+      buildDirectionDeepModule(profile, direction, nextDirection),
+      { title: reportModuleTitles.m7, body: direction.m7_actions.join("\n") }
+    ],
     track: trackData[nextDirection] || trackData.self
   };
 }
@@ -828,7 +837,7 @@ function samplePayload() {
 
 function fullReport(payload, options = {}) {
   const title = payload.nickname ? `寫給${payload.nickname}的自我筆記` : "寫給你的自我筆記";
-  const completion = options.isSwitchedReport ? "換好了。這一次，從「此刻」開始讀。" : "你的筆記寫好了。<br>找個安靜的地方，慢慢讀。不著急。";
+  const completion = options.isSwitchedReport ? "換好了。這一次，從新的方向開始讀。" : "你的筆記寫好了。<br>找個安靜的地方，慢慢讀。不著急。";
   const moduleHtml = reportModules(payload.modules, options);
   const switchHtml = options.isSample ? "" : directionSwitchModule(payload);
   const degradedHtml = payload.degraded ? `<p class="step-help">${degradedNote}</p>` : "";
@@ -886,7 +895,7 @@ function directionSwitchModule(payload) {
   return `
     <section class="note-module direction-switch">
       <h2>想換個方向，再看一次自己嗎？</h2>
-      <p>同一個你，換一個角度——筆記會為你重寫「此刻」與「小事」兩章，再換一首曲子。</p>
+      <p>同一個你，換一個角度——筆記會為你重寫這個方向的解讀和那三件小事，再換一首曲子。</p>
       <div class="direction-switch__grid">
         ${Object.entries(directions)
           .map(([value, label]) => {
