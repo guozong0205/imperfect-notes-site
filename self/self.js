@@ -1,6 +1,8 @@
 const pageKind = document.body.dataset.page;
+const selfScriptBase = new URL("./", document.currentScript.src);
 const storeKey = "selfNotesDraft";
 const quizStoreKey = "selfNotesQuickQuiz";
+const degradedNote = "補上你的出生時間，這份筆記會更貼近你一點。現在這份，先照我們已經知道的你來寫。";
 const loadingLines = [
   "正在認識你……",
   "正在寫下你的氣質……",
@@ -50,6 +52,7 @@ const reportModuleTitles = {
   m4: "你在關係裡的樣子",
   m5: "你和事業、資源的關係",
   m6: "此刻的你，走到了哪裡",
+  m6Deep: "順著你選的方向，再看深一點",
   m7: "三件可以試試的小事"
 };
 
@@ -62,6 +65,8 @@ const switchedReportHashes = new Set();
 const deepSectionViewEvents = new Set();
 let focusDirectionLineAfterRender = false;
 let baseModulesExpanded = false;
+let engineLoadPromise;
+let engineCopyPromise;
 
 function emitEvent(name, data = {}) {
   if (window.gtag) {
@@ -154,13 +159,74 @@ function firstTwoSentences(text) {
   return matches ? matches.slice(0, 2).join("") : paragraph;
 }
 
-function buildModules(profile, direction, directionKey) {
-  const moduleSix = {
+function loadEngine() {
+  if (!engineLoadPromise) {
+    engineLoadPromise = import(new URL("engine/engine.mjs", selfScriptBase).href);
+  }
+  return engineLoadPromise;
+}
+
+function loadEngineCopy() {
+  if (!engineCopyPromise) {
+    engineCopyPromise = fetch(new URL("data/engine-copy.json", selfScriptBase).href).then((res) => res.json());
+  }
+  return engineCopyPromise;
+}
+
+function longitudeForPlace(place) {
+  const normalized = (place || "").trim();
+  const known = [
+    ["北京", 116.4],
+    ["上海", 121.5],
+    ["廣州", 113.3],
+    ["广州", 113.3],
+    ["大連", 121.6],
+    ["大连", 121.6]
+  ];
+  const match = known.find(([name]) => normalized.includes(name));
+  return match ? match[1] : 120;
+}
+
+function fragmentBody(ids, copyData) {
+  return (ids || [])
+    .map((id) => copyData.fragments[id])
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+function buildModuleFive(selection, copyData, fallback) {
+  if (!selection || !copyData) return fallback;
+  const ids = [
+    selection.careerId,
+    selection.wealthId,
+    selection.split ? "m5.split" : null,
+    selection.bearId,
+    selection.leakId
+  ].filter(Boolean);
+  return fragmentBody(ids, copyData) || fallback;
+}
+
+function buildModuleFour(selection, copyData, fallback) {
+  if (!selection || !copyData) return fallback;
+  const ids = [selection.toneId, selection.pullId, selection.modId].filter(Boolean);
+  return fragmentBody(ids, copyData) || fallback;
+}
+
+function buildModuleSix(phaseBody = "") {
+  return {
     title: reportModuleTitles.m6,
-    body: `${direction.m6_phase}\n\n${profile.m6_deepen[directionKey]}`
+    body: phaseBody
+  };
+}
+
+function buildDirectionDeepModule(profile, direction, directionKey) {
+  const body = [direction.m6_phase, profile.m6_deepen[directionKey]].filter(Boolean).join("\n\n");
+  const module = {
+    title: reportModuleTitles.m6Deep,
+    body
   };
   if (directionKey === "career" && profile.career_fit && profile.career_avoid) {
-    moduleSix.deepSection = {
+    module.deepSection = {
       type: "career",
       framework: contentData.frameworks.career,
       fit: profile.career_fit,
@@ -168,7 +234,7 @@ function buildModules(profile, direction, directionKey) {
     };
   }
   if (directionKey === "resource" && profile.money_from && profile.money_leak && profile.money_rule) {
-    moduleSix.deepSection = {
+    module.deepSection = {
       type: "resource",
       framework: contentData.frameworks.resource,
       from: profile.money_from,
@@ -177,7 +243,7 @@ function buildModules(profile, direction, directionKey) {
     };
   }
   if (directionKey === "relation" && profile.relation_fit && profile.relation_hurt && profile.relation_word) {
-    moduleSix.deepSection = {
+    module.deepSection = {
       type: "relation",
       framework: contentData.frameworks.relation,
       fit: profile.relation_fit,
@@ -186,7 +252,7 @@ function buildModules(profile, direction, directionKey) {
     };
   }
   if (directionKey === "phase" && profile.phase_do && profile.phase_avoid && profile.phase_word) {
-    moduleSix.deepSection = {
+    module.deepSection = {
       type: "phase",
       framework: contentData.frameworks.phase,
       do: profile.phase_do,
@@ -194,23 +260,48 @@ function buildModules(profile, direction, directionKey) {
       word: profile.phase_word
     };
   }
+  return module;
+}
+
+function buildModules(profile, direction, directionKey, engineSelection = null, copyData = null, wealthCareer = null, relationship = null) {
+  const m1Body = engineSelection && copyData ? fragmentBody(engineSelection.m1, copyData) || profile.m1_core : profile.m1_core;
+  const m2Body = engineSelection && copyData && engineSelection.m2.length ? fragmentBody(engineSelection.m2, copyData) : profile.m2_forces;
+  const m4Body = buildModuleFour(relationship, copyData, profile.m4_relation);
+  const m5Body = buildModuleFive(wealthCareer, copyData, profile.m5_career);
+  const phaseBody = engineSelection && copyData ? fragmentBody(engineSelection.phase, copyData) : "";
+
   return [
-    { title: reportModuleTitles.m1, body: profile.m1_core },
-    { title: reportModuleTitles.m2, body: profile.m2_forces },
+    { title: reportModuleTitles.m1, body: m1Body },
+    { title: reportModuleTitles.m2, body: m2Body },
     { title: reportModuleTitles.m3, body: profile.m3_gifts },
-    { title: reportModuleTitles.m4, body: profile.m4_relation },
-    { title: reportModuleTitles.m5, body: profile.m5_career },
-    moduleSix,
+    { title: reportModuleTitles.m4, body: m4Body },
+    { title: reportModuleTitles.m5, body: m5Body },
+    buildModuleSix(phaseBody),
+    buildDirectionDeepModule(profile, direction, directionKey),
     { title: reportModuleTitles.m7, body: direction.m7_actions.join("\n") }
   ];
 }
 
-function buildPayload() {
+async function buildPayload() {
   const profile = contentData.types[state.mbti];
   const direction = contentData.directions[state.direction];
   if (!profile || !direction) {
     throw new Error("Report content not found.");
   }
+  const [engine, copyData] = await Promise.all([loadEngine(), loadEngineCopy()]);
+  const chart = engine.computeChart({
+    birthDate: state.birthDate,
+    birthTime: state.timeUnknown ? null : state.birthTime || null,
+    birthPlace: state.birthPlace || null,
+    longitude: longitudeForPlace(state.birthPlace),
+    gender: state.gender || "na",
+    timeUnknown: state.timeUnknown
+  });
+  const axes = engine.computeAxes(chart, state.mbti);
+  const selected = engine.selectFragments(axes);
+  const wealthCareer = engine.computeWealthCareer(chart, state.mbti);
+  const relationship = engine.computeRelationship(chart, state.mbti, state.gender || "na");
+  const phaseText = fragmentBody(selected.phase, copyData);
   const track = trackData[state.direction] || trackData.self;
   return {
     nickname: state.nickname || null,
@@ -222,9 +313,13 @@ function buildPayload() {
     mbtiSource: state.mbtiSource,
     direction: state.direction,
     createdAt: new Date().toISOString(),
+    degraded: chart.degraded,
+    phaseText,
+    m4Selection: relationship,
+    m5Selection: wealthCareer,
     keywords: profile.keywords,
     summary: profile.summary,
-    modules: buildModules(profile, direction, state.direction),
+    modules: buildModules(profile, direction, state.direction, selected, copyData, wealthCareer, relationship),
     track
   };
 }
@@ -235,13 +330,19 @@ function buildPayloadForDirection(payload, nextDirection) {
   if (!profile || !direction) {
     throw new Error("Report content not found.");
   }
+  const fixedModules = payload.modules.slice(0, 6);
   return {
     ...payload,
     direction: nextDirection,
     createdAt: new Date().toISOString(),
     keywords: profile.keywords,
     summary: profile.summary,
-    modules: buildModules(profile, direction, nextDirection),
+    phaseText: payload.phaseText || "",
+    modules: [
+      ...fixedModules,
+      buildDirectionDeepModule(profile, direction, nextDirection),
+      { title: reportModuleTitles.m7, body: direction.m7_actions.join("\n") }
+    ],
     track: trackData[nextDirection] || trackData.self
   };
 }
@@ -668,22 +769,21 @@ function calculateQuiz() {
 function generateReport(root) {
   emitEvent("self_generate_complete");
   const stopLoading = renderGenerating(root);
+  const payloadPromise = buildPayload();
 
-  setTimeout(() => {
+  Promise.all([payloadPromise, new Promise((resolve) => setTimeout(resolve, 4100))]).then(([payload]) => {
     stopLoading();
-    try {
-      const payload = buildPayload();
-      const encoded = encodePayload(payload);
-      localStorage.setItem("selfNotesLastReport", encoded);
-      window.location.href = `../r/#${encoded}`;
-    } catch {
-      root.innerHTML = `
-        <p class="step-question">這一頁沒寫好，再試一次可以嗎？你填的內容都還在。</p>
-        <button class="self-button" type="button" data-generate>重新生成</button>
-      `;
-      bindStep(root);
-    }
-  }, 4100);
+    const encoded = encodePayload(payload);
+    localStorage.setItem("selfNotesLastReport", encoded);
+    window.location.href = `../r/#${encoded}`;
+  }).catch(() => {
+    stopLoading();
+    root.innerHTML = `
+      <p class="step-question">這一頁沒寫好，再試一次可以嗎？你填的內容都還在。</p>
+      <button class="self-button" type="button" data-generate>重新生成</button>
+    `;
+    bindStep(root);
+  });
 }
 
 function renderGenerating(root) {
@@ -746,9 +846,10 @@ function samplePayload() {
 
 function fullReport(payload, options = {}) {
   const title = payload.nickname ? `寫給${payload.nickname}的自我筆記` : "寫給你的自我筆記";
-  const completion = options.isSwitchedReport ? "換好了。這一次，從「此刻」開始讀。" : "你的筆記寫好了。<br>找個安靜的地方，慢慢讀。不著急。";
+  const completion = options.isSwitchedReport ? "換好了。這一次，從新的方向開始讀。" : "你的筆記寫好了。<br>找個安靜的地方，慢慢讀。不著急。";
   const moduleHtml = reportModules(payload.modules, options);
   const switchHtml = options.isSample ? "" : directionSwitchModule(payload);
+  const degradedHtml = payload.degraded ? `<p class="step-help">${degradedNote}</p>` : "";
   const shareHtml = options.isSample
     ? ""
     : `<div class="step-actions">
@@ -764,6 +865,7 @@ function fullReport(payload, options = {}) {
       <p class="completion">${completion}</p>
       <div class="keyword-row">${payload.keywords.map((item) => `<span>${item}</span>`).join("")}</div>
       <p>${payload.summary}</p>
+      ${degradedHtml}
     </header>
     ${moduleHtml}
     ${trackModule(payload.track)}
@@ -802,7 +904,7 @@ function directionSwitchModule(payload) {
   return `
     <section class="note-module direction-switch">
       <h2>想換個方向，再看一次自己嗎？</h2>
-      <p>同一個你，換一個角度——筆記會為你重寫「此刻」與「小事」兩章，再換一首曲子。</p>
+      <p>同一個你，換一個角度——筆記會為你重寫這個方向的解讀和那三件小事，再換一首曲子。</p>
       <div class="direction-switch__grid">
         ${Object.entries(directions)
           .map(([value, label]) => {

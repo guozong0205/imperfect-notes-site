@@ -118,6 +118,11 @@ body.privacy-body::before {
   max-width: 780px;
   margin: 0;
   font-size: clamp(40px, 6vw, 64px);
+  text-wrap: balance;
+}
+
+.self-hero h1 span {
+  display: inline-block;
 }
 
 .self-hero p,
@@ -776,6 +781,7 @@ body.privacy-body::before {
 
 @media (max-width: 540px) {
   .self-hero h1 {
+    max-width: 8.5em;
     font-size: 40px;
   }
 
