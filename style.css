@@ -811,8 +811,8 @@ body.hero-bg-d {
 
 .support-card--single {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.7fr);
-  gap: 36px;
+  grid-template-columns: minmax(0, 1.08fr) minmax(380px, 0.68fr);
+  gap: 20px;
   align-items: stretch;
   grid-column: 1 / -1;
 }
@@ -824,7 +824,7 @@ body.hero-bg-d {
 .support-card__cta {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-width: 0;
 }
 
@@ -870,17 +870,17 @@ body.hero-bg-d {
   grid-template-columns: max-content auto;
   grid-template-rows: auto auto;
   align-items: center;
-  column-gap: 24px;
-  row-gap: 4px;
-  padding: 22px 44px;
+  column-gap: 27px;
+  row-gap: 5px;
+  padding: 25px 50px;
   border: 1.5px solid var(--warm) !important;
-  border-radius: 18px !important;
+  border-radius: 20px !important;
   color: var(--warm);
   line-height: 1.2;
   letter-spacing: 0.04em;
   font-style: normal;
-  background: transparent;
-  box-shadow: 0 0 0 rgba(212, 168, 120, 0);
+  background: linear-gradient(135deg, rgba(212, 168, 120, 0.12), rgba(240, 200, 144, 0.04));
+  box-shadow: 0 16px 40px rgba(212, 168, 120, 0.12), inset 0 0 22px rgba(240, 200, 144, 0.035);
   transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 
@@ -893,8 +893,8 @@ body.hero-bg-d {
 .support-action span:first-child {
   grid-row: 1;
   color: var(--warm);
-  font-size: 1.3rem;
-  font-weight: 500;
+  font-size: 1.46rem;
+  font-weight: 600;
   font-style: normal !important;
   font-family: inherit;
   letter-spacing: 0.05em;
@@ -902,8 +902,8 @@ body.hero-bg-d {
 
 .support-action span:nth-child(2) {
   grid-row: 2;
-  color: rgba(240, 200, 144, 0.72);
-  font-size: 0.85rem;
+  color: rgba(240, 200, 144, 0.78);
+  font-size: 0.95rem;
   font-family: var(--font-display);
   font-style: italic !important;
   letter-spacing: 0.02em;
@@ -912,18 +912,18 @@ body.hero-bg-d {
 .support-action__arrow {
   grid-column: 2;
   grid-row: 1 / 3;
-  width: 22px;
-  height: 22px;
+  width: 25px;
+  height: 25px;
   flex-shrink: 0;
   transition: transform 0.2s ease;
 }
 
 .support-action:hover {
   color: var(--bg);
-  background: linear-gradient(135deg, var(--warm), var(--warm-hover));
+  background: linear-gradient(135deg, var(--warm), var(--warm-hover) 62%, #f8ddb4);
   border-color: var(--warm-hover);
-  box-shadow: 0 18px 42px rgba(212, 168, 120, 0.18);
-  transform: translateY(-2px);
+  box-shadow: 0 22px 52px rgba(212, 168, 120, 0.24), 0 0 34px rgba(240, 200, 144, 0.14);
+  transform: translateY(-3px);
 }
 
 .support-action:hover span,
@@ -1092,15 +1092,15 @@ body.hero-bg-d {
     width: 100%;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 18px;
-    padding: 20px 24px;
+    padding: 22px 24px;
   }
 
   .support-action span:first-child {
-    font-size: 1.12rem;
+    font-size: 1.18rem;
   }
 
   .support-action span:nth-child(2) {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
   }
 
   .episode-grid {
