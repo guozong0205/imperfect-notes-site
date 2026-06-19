@@ -810,7 +810,22 @@ body.hero-bg-d {
 }
 
 .support-card--single {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  gap: 36px;
+  align-items: stretch;
   grid-column: 1 / -1;
+}
+
+.support-card__copy {
+  min-width: 0;
+}
+
+.support-card__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
 }
 
 .support-card h3 {
@@ -1028,6 +1043,15 @@ body.hero-bg-d {
   .featured-card,
   .about__grid {
     grid-template-columns: 1fr;
+  }
+
+  .support-card--single {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .support-card__cta {
+    justify-content: flex-start;
   }
 
   .episode-grid {
