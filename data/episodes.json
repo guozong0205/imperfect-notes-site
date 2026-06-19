@@ -2,6 +2,19 @@
   "schema": "imperfect_notes.episodes.v1",
   "episodes": [
     {
+      "ep": 17,
+      "episode": "第17期",
+      "titleZh": "Stay a While | 月夜裡的鋼琴與古典吉他",
+      "titleEn": "Stay a While",
+      "description": "Moonlit Classical Piano & Guitar for Deep Focus, Study & Calm",
+      "mp3Url": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep17.mp3",
+      "cover": "assets/covers/ep17.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=EtRRsfCPC-E",
+      "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep17_desktop_4k.jpg",
+      "publishDate": "2026-06-19",
+      "active": true
+    },
+    {
       "ep": 16,
       "episode": "第16期",
       "titleZh": "暮色，空廳 | 溫暖的大提琴與鋼琴，給深夜與慢時光",
@@ -12,7 +25,7 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=WUbkGbixbOs",
       "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep16_desktop_4k.jpg",
       "publishDate": "2026-06-14",
-      "active": true
+      "active": false
     },
     {
       "ep": 15,
