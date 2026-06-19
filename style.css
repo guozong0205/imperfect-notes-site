@@ -773,6 +773,33 @@ body.hero-bg-d {
   gap: 24px;
 }
 
+.support-intro {
+  max-width: 780px;
+  margin: 0 0 28px;
+  color: var(--quiet);
+  font-size: 17px;
+  line-height: 1.9;
+}
+
+.support-intro span,
+.support-card h3 span,
+.support-card strong span,
+.support-list span,
+.support-format span {
+  display: block;
+}
+
+.support-intro span:last-child,
+.support-card h3 span:last-child,
+.support-card strong span:last-child,
+.support-list span:last-child,
+.support-format span:last-child {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-style: italic;
+  letter-spacing: 0;
+}
+
 .support-card {
   min-width: 0;
   padding: 28px;
@@ -780,6 +807,10 @@ body.hero-bg-d {
   border-radius: 16px;
   background: var(--panel);
   overflow: hidden;
+}
+
+.support-card--single {
+  grid-column: 1 / -1;
 }
 
 .support-card h3 {
@@ -794,6 +825,29 @@ body.hero-bg-d {
   display: block;
   margin: 0 0 18px;
   font-weight: 300;
+}
+
+.support-list {
+  display: grid;
+  gap: 14px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  color: var(--text);
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.support-list li {
+  padding-left: 18px;
+  border-left: 1px solid var(--line);
+}
+
+.support-format {
+  max-width: 780px;
+  color: var(--quiet);
+  font-size: 14px;
+  line-height: 1.8;
 }
 
 .support-action {
