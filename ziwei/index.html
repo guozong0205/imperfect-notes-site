@@ -2,7 +2,7 @@
 <html lang="zh-Hans">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
 <title>紫微斗数 · 三盘叠层（真实排盘）</title>
 <style>
   :root{
@@ -131,10 +131,73 @@
     #qBody{max-height:50vh;} .chatMsg{max-width:92%;font-size:12.5px;} .chatTop{margin-bottom:8px;} .chatHint{display:none;}
     .chatComposer{grid-template-columns:1fr 60px;} #qBtn{font-size:12px;} #qInput{font-size:13px;}
   }
+  #mobileTop,#mobileChartBar{display:none;}
+  @media (max-width:640px){
+    html,body{height:100dvh;min-height:100dvh;overflow:hidden;}
+    body{padding:0;background:var(--bg);}
+    #mobileTop{position:fixed;top:0;left:0;right:0;z-index:80;display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;
+      min-height:52px;padding:8px max(10px,env(safe-area-inset-left)) 7px max(10px,env(safe-area-inset-left));
+      background:rgba(7,7,15,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(16px);}
+    #mobileTop .mtTitle{min-width:0;}
+    #mobileTop .mtName{font-size:14px;font-weight:600;line-height:1.2;color:#fff;}
+    #mobileTop .mtSummary{margin-top:2px;font-size:11px;line-height:1.2;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    #mobileTop button,#mobileChartBar button{min-width:52px;min-height:36px;border:1px solid rgba(185,168,255,.28);border-radius:10px;
+      background:rgba(185,168,255,.13);color:var(--ink);font-size:13px;font-family:inherit;}
+    #mobileTop button:active,#mobileChartBar button:active{background:rgba(185,168,255,.24);}
+    #app{display:none;}
+    .credit,#legend{display:none!important;}
+    #head{position:fixed;top:auto;left:0;right:0;bottom:0;z-index:95;width:auto;max-height:min(78dvh,620px);overflow:auto;
+      padding:16px max(16px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+      border-radius:18px 18px 0 0;background:rgba(16,15,30,.97);transform:translateY(105%);transition:transform .24s ease;
+      box-shadow:0 -22px 60px rgba(0,0,0,.55);}
+    body.mobile-form-open #head{transform:translateY(0);}
+    #head h1{font-size:15px;margin-bottom:10px;}
+    #head .fld{font-size:13px;margin-top:10px;}
+    #head .fld input,#head .fld select,#head .gbtn button{min-height:42px;font-size:16px;}
+    #go{min-height:44px;font-size:14px;}
+    #summary{display:block;max-height:22dvh;overflow:auto;}
+    #ask{display:flex;flex-direction:column;left:0;right:0;top:52px;bottom:var(--mobile-keyboard-bottom,0px);width:auto;max-width:none;transform:none;
+      min-height:0;padding:12px max(10px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));
+      border-radius:0;border-width:0;background:linear-gradient(180deg,rgba(10,9,22,.80),rgba(7,7,15,.97));box-shadow:none;animation:none!important;}
+    #ask.ready{display:flex;animation:none;}
+    .chatTop{flex:none;margin-bottom:8px;}
+    .asklabel{font-size:11px;}
+    #qBody{flex:1;min-height:0;max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 0 12px;gap:9px;}
+    .chatMsg{max-width:90%;font-size:14px;line-height:1.68;padding:10px 12px;border-radius:15px;}
+    .chatMsg .aitext{font-size:14px;line-height:1.68;}
+    .qchips{gap:8px;margin-top:2px;}
+    .qchip{max-width:100%;white-space:normal;font-size:13px;line-height:1.35;padding:8px 11px;border-radius:16px;}
+    .chatComposer{position:sticky;bottom:0;flex:none;grid-template-columns:minmax(0,1fr) 58px;gap:8px;margin-top:0;
+      padding-top:9px;background:linear-gradient(180deg,rgba(7,7,15,0),rgba(7,7,15,.96) 22%);}
+    #qInput{min-height:46px;max-height:120px;font-size:16px;line-height:1.42;padding:11px 12px;border-radius:13px;}
+    #qBtn{min-height:46px;height:46px;min-width:54px;font-size:13px;border-radius:13px;padding:0 8px;}
+    #read,#ctrl,#info{display:none;}
+    body.mobile-chart-open #app{display:block;position:fixed;inset:0;z-index:40;background:var(--bg);}
+    body.mobile-chart-open #mobileChartBar{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;
+      min-height:50px;padding:7px max(10px,env(safe-area-inset-right)) 7px max(10px,env(safe-area-inset-left));
+      background:rgba(7,7,15,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(16px);}
+    #mobileChartBar span{font-size:13px;color:var(--violet);letter-spacing:.12em;}
+    body.mobile-chart-open #read,body.mobile-chart-open #ctrl,body.mobile-chart-open #info{display:block;position:fixed;z-index:85;background:rgba(16,15,30,.90);}
+    body.mobile-chart-open #read{left:10px;right:10px;top:58px;width:auto;max-height:30dvh;overflow:auto;padding:11px;border-radius:12px;}
+    body.mobile-chart-open #ctrl{left:10px;right:auto;top:auto;bottom:calc(12px + env(safe-area-inset-bottom));width:min(230px,calc(100vw - 20px));padding:11px;border-radius:12px;}
+    body.mobile-chart-open #info{left:10px;right:10px;top:calc(58px + 30dvh + 8px);width:auto;max-height:18dvh;overflow:auto;padding:11px;border-radius:12px;}
+    body.mobile-chart-open #ctrl[open]+#info{display:none;}
+    body.mobile-chart-open #ask,body.mobile-chart-open #mobileTop{display:none!important;}
+    body.mobile-form-open::before,body.mobile-chart-open::before{content:'';position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.42);}
+    body.mobile-chart-open::before{display:none;}
+    body.mobile-form-open #ask{filter:blur(1px);pointer-events:none;}
+  }
 </style>
 </head>
 <body>
 <div id="app"></div>
+
+<div id="mobileTop">
+  <div class="mtTitle"><div class="mtName">紫微聊天</div><div id="mobileSummary" class="mtSummary">先点「生辰」排盘</div></div>
+  <button id="mBirth" type="button">生辰</button>
+  <button id="mChart" type="button">看盘</button>
+</div>
+<div id="mobileChartBar"><span>完整命盘</span><button id="mCloseChart" type="button">关闭</button></div>
 
 <div id="head" class="panel">
   <h1>紫微斗数 · 三盘叠层<small>real chart engine · iztro</small></h1>
@@ -712,16 +775,47 @@
   function fitQuestionInput(){
     var i=document.getElementById('qInput'); i.style.height='auto'; i.style.height=Math.min(i.scrollHeight,118)+'px';
   }
+  function isMobileLayout(){return window.matchMedia&&window.matchMedia('(max-width:640px)').matches;}
+  function closeMobileForm(){document.body.classList.remove('mobile-form-open');}
+  function openMobileChart(){
+    document.body.classList.remove('mobile-form-open');
+    document.body.classList.add('mobile-chart-open');
+    setTimeout(function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);},30);
+  }
+  function closeMobileChart(){document.body.classList.remove('mobile-chart-open');}
+  function updateMobileSummary(){
+    var el=document.getElementById('mobileSummary'); if(!el)return;
+    if(!CHART){el.textContent='先点「生辰」排盘';return;}
+    var mb=CHART.soulBranch, stars=CHART.byBranch[mb].major.map(function(s){return s.name;}).join('、')||'空宫';
+    el.textContent=CHART.solar+' '+CHART.time+' · 命宫'+DZHI[mb]+' · '+stars;
+  }
+  function adjustMobileKeyboard(){
+    if(!isMobileLayout())return;
+    var vv=window.visualViewport, bottom=0;
+    if(vv)bottom=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
+    document.documentElement.style.setProperty('--mobile-keyboard-bottom',bottom+'px');
+    setTimeout(scrollChat,30);
+  }
   function run(){try{
     CHART=computeChart(document.getElementById('iDate').value,+document.getElementById('iTime').value,gender,+document.getElementById('iYear').value);
     buildContent(); selected=null; clearFlying(); updateSummary();
     document.getElementById('infoBody').innerHTML='<div class="empty">点击任一宫查看真实主星与三方四正。</div>';
     var aiB=document.getElementById('aiBtn'); aiB.disabled=false;
     var ab=document.getElementById('aiBody'); ab.style.display='none'; ab.innerHTML='';
+    updateMobileSummary(); if(isMobileLayout())closeMobileForm();
     resetChat();
   }catch(err){document.getElementById('summary').innerHTML='<span style="color:#ef7d6a">排盘失败：'+err.message+'</span>';}}
   document.getElementById('go').onclick=run;
   document.getElementById('aiBtn').onclick=callAI;
+  document.getElementById('mBirth').onclick=function(){document.body.classList.add('mobile-form-open');closeMobileChart();};
+  document.getElementById('mChart').onclick=openMobileChart;
+  document.getElementById('mCloseChart').onclick=closeMobileChart;
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize',adjustMobileKeyboard);
+    visualViewport.addEventListener('scroll',adjustMobileKeyboard);
+  }
+  addEventListener('orientationchange',function(){setTimeout(adjustMobileKeyboard,180);});
+  adjustMobileKeyboard();
 
   // ---------- 自由问答：结合命盘实时解答用户的具体问题 ----------
   async function askQuestion(preset){
