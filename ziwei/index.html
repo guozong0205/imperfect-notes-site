@@ -42,7 +42,12 @@
   #legend .lg:first-child{margin-top:0;}
   .sw{width:20px;height:3px;border-radius:2px;flex:none;} .dt{width:9px;height:9px;border-radius:50%;flex:none;}
 
-  #ctrl{bottom:16px;left:16px;display:flex;flex-direction:column;gap:10px;width:232px;}
+  #ctrl{bottom:16px;left:16px;width:232px;z-index:8;}
+  #ctrl summary,#read summary{list-style:none;cursor:pointer;color:var(--violet);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;}
+  #ctrl summary::-webkit-details-marker,#read summary::-webkit-details-marker{display:none;}
+  #ctrl summary::before,#read summary::before{content:'+';display:inline-block;margin-right:7px;color:var(--gold);}
+  #ctrl[open] summary::before,#read[open] summary::before{content:'−';}
+  #ctrl .ctrlInner{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
   .seg{display:flex;gap:6px;}
   .seg button{flex:1;background:rgba(120,110,180,0.10);color:var(--ink);border:1px solid var(--line);
     border-radius:9px;padding:8px 0;font-size:12px;cursor:pointer;font-family:inherit;}
@@ -63,7 +68,8 @@
 
   .seg.mode button{font-size:11.5px;}
   .seg button:disabled{opacity:0.4;cursor:not-allowed;}
-  #read{top:16px;right:230px;width:268px;max-height:calc(100vh - 32px);overflow:auto;}
+  #read{top:16px;right:230px;width:268px;max-height:calc(100vh - 32px);overflow:auto;z-index:8;}
+  #read .readInner{margin-top:12px;}
   #read .rtt{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:.02em;margin-bottom:4px;}
   #read .rs{margin-top:11px;}
   #read .rh{font-size:10px;letter-spacing:.2em;color:var(--violet);text-transform:uppercase;margin-bottom:4px;}
@@ -89,19 +95,42 @@
   .aiload::after{content:'';animation:dots 1.2s steps(4,end) infinite;}
   @keyframes dots{0%{content:''}25%{content:'·'}50%{content:'··'}75%{content:'···'}}
   .aierr{font-size:11.5px;color:#efb08a;line-height:1.65;}
-  #ask{margin-top:13px;padding-top:12px;border-top:1px solid var(--line);}
-  .asklabel{font-size:10px;letter-spacing:.24em;color:var(--violet);text-transform:uppercase;margin-bottom:8px;}
-  .qchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
-  .qchip{background:rgba(120,110,180,0.10);color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit;line-height:1.3;text-align:left;}
-  .qchip:hover{color:var(--ink);border-color:var(--violet);}
-  #qInput{width:100%;box-sizing:border-box;background:rgba(120,110,180,0.10);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 9px;font-size:12.5px;font-family:inherit;resize:vertical;}
+  #ask{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);width:min(760px,calc(100vw - 360px));
+    max-width:calc(100vw - 360px);display:none;z-index:20;padding:14px 15px 15px;
+    background:linear-gradient(180deg,rgba(23,21,42,.90),rgba(12,11,24,.88));
+    border:1px solid rgba(185,168,255,.34);border-radius:18px;backdrop-filter:blur(18px);
+    box-shadow:0 0 0 1px rgba(185,168,255,.08),0 18px 60px rgba(0,0,0,.44),0 0 34px rgba(185,168,255,.20);}
+  #ask.ready{display:block;animation:chatBreath 3.2s ease-in-out infinite;}
+  @keyframes chatBreath{0%,100%{box-shadow:0 0 0 1px rgba(185,168,255,.08),0 18px 60px rgba(0,0,0,.44),0 0 24px rgba(185,168,255,.15);}50%{box-shadow:0 0 0 1px rgba(185,168,255,.16),0 20px 64px rgba(0,0,0,.48),0 0 46px rgba(185,168,255,.30);}}
+  .chatTop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+  .asklabel{font-size:10.5px;letter-spacing:.24em;color:var(--violet);text-transform:uppercase;}
+  .chatHint{font-size:11px;color:var(--mute);white-space:nowrap;}
+  #qBody{display:flex;flex-direction:column;gap:10px;max-height:34vh;overflow:auto;padding:2px 3px 8px;scroll-behavior:smooth;}
+  .chatMsg{max-width:78%;border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.72;}
+  .chatMsg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(185,168,255,.28),rgba(103,224,214,.13));color:#fff;border-color:rgba(185,168,255,.42);border-bottom-right-radius:5px;}
+  .chatMsg.assistant{align-self:flex-start;background:rgba(120,110,180,.12);color:#d6d1eb;border-bottom-left-radius:5px;}
+  .chatMsg.assistant.welcome{border-color:rgba(231,189,106,.28);}
+  .chatMsg .aitext{font-size:13px;line-height:1.72;}
+  .chatMsg .aitext h4{font-size:13.5px;}
+  .qchips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 3px;}
+  .qchip{background:rgba(185,168,255,0.12);color:#dcd7f2;border:1px solid rgba(185,168,255,.24);border-radius:20px;padding:6px 11px;font-size:12px;cursor:pointer;font-family:inherit;line-height:1.3;text-align:left;}
+  .qchip:hover{color:#fff;border-color:var(--violet);background:rgba(185,168,255,.20);}
+  .chatComposer{display:grid;grid-template-columns:1fr 72px;gap:9px;align-items:end;margin-top:9px;}
+  #qInput{width:100%;min-height:46px;max-height:118px;box-sizing:border-box;background:rgba(8,8,18,0.64);color:var(--ink);border:1px solid rgba(185,168,255,.30);border-radius:13px;padding:12px 13px;font-size:14px;font-family:inherit;resize:none;line-height:1.45;}
   #qInput::placeholder{color:var(--mute);}
-  #qBtn{width:100%;margin-top:7px;background:linear-gradient(135deg,rgba(185,168,255,.22),rgba(103,224,214,.16));border:1px solid var(--violet);color:var(--ink);border-radius:9px;padding:8px;font-size:12.5px;cursor:pointer;font-family:inherit;}
-  #qBtn:hover{background:linear-gradient(135deg,rgba(185,168,255,.34),rgba(103,224,214,.24));}
+  #qInput:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(185,168,255,.13);}
+  #qBtn{height:46px;background:linear-gradient(135deg,rgba(185,168,255,.42),rgba(103,224,214,.24));border:1px solid var(--violet);color:#fff;border-radius:13px;padding:0 12px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;}
+  #qBtn:hover{background:linear-gradient(135deg,rgba(185,168,255,.52),rgba(103,224,214,.30));}
   #qBtn:disabled{opacity:.4;cursor:not-allowed;}
-  #qBody{margin-top:11px;padding-top:11px;border-top:1px dashed var(--line);}
-  @media (max-width:1180px){ #read{right:16px;top:auto;bottom:96px;width:230px;max-height:42vh;} }
-  @media (max-width:780px){ #legend{display:none;} #ctrl{width:200px;} #head{width:230px;} #info{width:180px;} #read{display:none;} }
+  @media (prefers-reduced-motion:reduce){#ask.ready{animation:none;}}
+  @media (max-width:1180px){ #read{right:16px;top:16px;width:230px;max-height:42vh;} #ask{width:min(680px,calc(100vw - 280px));max-width:calc(100vw - 280px);} }
+  @media (max-width:780px){
+    #legend,.credit{display:none;} #head{top:10px;left:10px;right:10px;width:auto;max-height:34vh;padding:12px;} #summary{display:none;}
+    #info{display:none;} #read{top:10px;right:10px;width:212px;max-height:48vh;padding:10px;} #ctrl{left:10px;bottom:auto;top:calc(34vh + 18px);width:190px;padding:10px;}
+    #ask{left:10px;right:10px;bottom:10px;transform:none;width:auto;max-width:none;border-radius:16px;padding:12px;}
+    #qBody{max-height:50vh;} .chatMsg{max-width:92%;font-size:12.5px;} .chatTop{margin-bottom:8px;} .chatHint{display:none;}
+    .chatComposer{grid-template-columns:1fr 60px;} #qBtn{font-size:12px;} #qInput{font-size:13px;}
+  }
 </style>
 </head>
 <body>
@@ -137,36 +166,43 @@
   <div class="lg"><span class="dt" style="background:var(--violet)"></span>北极 · 紫微垣（中枢）</div>
 </div>
 
-<div id="ctrl" class="panel">
-  <div class="seg mode">
-    <button id="mYun" class="on">运限叠加 · 3D</button>
-    <button id="mFei">同盘飞化 · 平面</button>
+<details id="ctrl" class="panel">
+  <summary>3D 控制</summary>
+  <div class="ctrlInner">
+    <div class="seg mode">
+      <button id="mYun" class="on">运限叠加 · 3D</button>
+      <button id="mFei">同盘飞化 · 平面</button>
+    </div>
+    <div class="seg">
+      <button id="bFlat">俯视 · 平面盘</button>
+      <button id="bOpen" class="on">立体展开</button>
+    </div>
+    <div class="row"><span>展开</span><input id="sExp" type="range" min="0" max="100" value="82"></div>
+    <label class="toggle"><input id="cRot" type="checkbox" checked>缓慢自转</label>
+    <label class="toggle"><input id="cHua" type="checkbox" checked>四化飞星（真实数据）</label>
   </div>
-  <div class="seg">
-    <button id="bFlat">俯视 · 平面盘</button>
-    <button id="bOpen" class="on">立体展开</button>
-  </div>
-  <div class="row"><span>展开</span><input id="sExp" type="range" min="0" max="100" value="82"></div>
-  <label class="toggle"><input id="cRot" type="checkbox" checked>缓慢自转</label>
-  <label class="toggle"><input id="cHua" type="checkbox" checked>四化飞星（真实数据）</label>
-</div>
+</details>
 
 <div id="info" class="panel"><div id="infoBody"><div class="empty">输入生辰后点「排盘」。<br>点击任一宫查看真实主星与三方四正。<br>拖动旋转 / 上下拖动俯仰。</div></div></div>
 
-<div id="read" class="panel">
-  <div class="readbar"><span class="rlabel">解读</span><button id="aiBtn" disabled>✦ AI 详细解说</button></div>
-  <div id="readBody"><div class="empty" style="color:var(--mute);line-height:1.7">排盘后这里显示专业解读。</div></div>
-  <div id="aiBody" style="display:none"></div>
-  <div id="ask">
-    <div class="asklabel">问命盘 · 实时解答</div>
-    <div class="qchips">
-      <button class="qchip" type="button">为什么我最近人际关系总出问题？</button>
-      <button class="qchip" type="button">今年事业运势怎么样？</button>
-      <button class="qchip" type="button">感情上我该注意什么？</button>
-    </div>
-    <textarea id="qInput" rows="2" placeholder="排盘后，问任何具体问题，例如：为什么我最近的人际关系总出现问题，工作上也因此不顺？"></textarea>
-    <button id="qBtn" type="button" disabled>✦ 结合命盘解答</button>
-    <div id="qBody" style="display:none"></div>
+<details id="read" class="panel">
+  <summary>展开完整命盘解读</summary>
+  <div class="readInner">
+    <div class="readbar"><span class="rlabel">解读</span><button id="aiBtn" disabled>✦ AI 详细解说</button></div>
+    <div id="readBody"><div class="empty" style="color:var(--mute);line-height:1.7">排盘后这里显示专业解读。</div></div>
+    <div id="aiBody" style="display:none"></div>
+  </div>
+</details>
+
+<div id="ask">
+  <div class="chatTop">
+    <div class="asklabel">跟命盘聊天</div>
+    <div class="chatHint">排盘后可连续追问</div>
+  </div>
+  <div id="qBody"></div>
+  <div class="chatComposer">
+    <textarea id="qInput" rows="1" placeholder="想知道什么？比如：我今年的感情运势…"></textarea>
+    <button id="qBtn" type="button" disabled>发送</button>
   </div>
 </div>
 
@@ -647,49 +683,84 @@
     }
   }
 
+  var chatHistory=[],chatBusy=false;
+  var quickQuestions=[
+    '我最近人际关系为什么总出问题？',
+    '今年感情上我该注意什么？',
+    '事业接下来适合主动突破还是稳住？',
+    '我的财运和花钱模式有什么要留意？',
+    '健康和压力方面最该照顾哪里？'
+  ];
+  function scrollChat(){var qBody=document.getElementById('qBody');qBody.scrollTop=qBody.scrollHeight;}
+  function addChatBubble(role,html,extra){
+    var qBody=document.getElementById('qBody'),el=document.createElement('div');
+    el.className='chatMsg '+role+(extra?' '+extra:''); el.innerHTML=html; qBody.appendChild(el); scrollChat(); return el;
+  }
+  function resetChat(){
+    chatHistory=[]; chatBusy=false;
+    var ask=document.getElementById('ask'),qBody=document.getElementById('qBody'),qInput=document.getElementById('qInput'),qBtn=document.getElementById('qBtn');
+    ask.classList.add('ready'); qInput.value=''; qInput.style.height=''; qBtn.disabled=false;
+    qBody.innerHTML='';
+    addChatBubble('assistant','你的盘排好了，看不懂没关系，直接问我 👇','welcome');
+    var chips=document.createElement('div'); chips.className='qchips';
+    quickQuestions.forEach(function(q){var b=document.createElement('button');b.className='qchip';b.type='button';b.textContent=q;chips.appendChild(b);});
+    qBody.appendChild(chips); scrollChat();
+  }
+  function chatContext(){
+    return chatHistory.slice(-8).map(function(m){return (m.role==='user'?'用户':'命盘')+'：'+m.text;}).join('\n\n');
+  }
+  function fitQuestionInput(){
+    var i=document.getElementById('qInput'); i.style.height='auto'; i.style.height=Math.min(i.scrollHeight,118)+'px';
+  }
   function run(){try{
     CHART=computeChart(document.getElementById('iDate').value,+document.getElementById('iTime').value,gender,+document.getElementById('iYear').value);
     buildContent(); selected=null; clearFlying(); updateSummary();
     document.getElementById('infoBody').innerHTML='<div class="empty">点击任一宫查看真实主星与三方四正。</div>';
     var aiB=document.getElementById('aiBtn'); aiB.disabled=false;
     var ab=document.getElementById('aiBody'); ab.style.display='none'; ab.innerHTML='';
-    document.getElementById('qBtn').disabled=false;
-    var qb=document.getElementById('qBody'); qb.style.display='none'; qb.innerHTML='';
+    resetChat();
   }catch(err){document.getElementById('summary').innerHTML='<span style="color:#ef7d6a">排盘失败：'+err.message+'</span>';}}
   document.getElementById('go').onclick=run;
   document.getElementById('aiBtn').onclick=callAI;
 
   // ---------- 自由问答：结合命盘实时解答用户的具体问题 ----------
-  async function askQuestion(){
+  async function askQuestion(preset){
     var qBody=document.getElementById('qBody');
-    if(!CHART){ qBody.style.display='block'; qBody.innerHTML='<div class="aierr">请先点「排盘」生成命盘，再提问。</div>'; return; }
-    var q=(document.getElementById('qInput').value||'').trim();
-    if(!q){ document.getElementById('qInput').focus(); return; }
+    if(!CHART){ document.getElementById('ask').classList.add('ready'); addChatBubble('assistant','<div class="aierr">请先点「排盘」生成命盘，再提问。</div>'); return; }
+    if(chatBusy)return;
+    var qInput=document.getElementById('qInput');
+    var q=(preset||qInput.value||'').trim();
+    if(!q){ qInput.focus(); return; }
     var ep=(document.getElementById('iEndpoint').value||'').trim();
-    var qBtn=document.getElementById('qBtn'); qBtn.disabled=true;
-    qBody.style.display='block'; qBody.innerHTML='<div class="aiload">正在结合命盘解读，请稍候</div>';
+    var qBtn=document.getElementById('qBtn'); qBtn.disabled=true; chatBusy=true;
+    qInput.value=''; fitQuestionInput();
+    addChatBubble('user',esc(q));
+    var answer=addChatBubble('assistant','<div class="aiload">正在结合命盘解读，请稍候</div>');
     var sys='你是一位资深紫微斗数命理师。下面是一张由确定性算法排定、准确无误的命盘——你绝不可改动、增删或杜撰任何星曜与落宫，只能在既定事实之上诠释。请直接回答用户提出的具体问题：先点明该问题对应的宫位与星曜（如人际看仆役/兄弟宫、感情看夫妻宫、事业看官禄宫、财运看财帛宫、健康看疾厄宫等），再结合其三方四正会照、四化作用，并参酌当前大限与流年的影响，给出有条理、可落地的分析与建议。语气沉稳温和，避免宿命论与绝对断言，多用「倾向」「易」「宜」。用「## 小标题」分节，约400–700字。结尾用一句话提醒此为传统命理框架下的参考。';
-    var user='命盘事实如下：\n'+chartFacts()+'\n\n用户的问题：'+q;
+    var hist=chatContext();
+    var user='命盘事实如下：\n'+chartFacts()+'\n\n'+(hist?'本次会话历史如下，请延续上下文回答，不要重复已经说过的内容：\n'+hist+'\n\n':'')+'用户的问题：'+q;
     try{
       if(!ep) throw new Error('未配置解读接口');
       var resp=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({system:sys,user:user,max_tokens:2000,stream:true})});
       if(!resp.ok){var ej=await resp.json().catch(function(){return{};});throw new Error(ej.error||('HTTP '+resp.status));}
-      qBody.innerHTML='<div class="aihead">✦ 解答 · '+esc(q.slice(0,38))+(q.length>38?'…':'')+'</div><div class="aitext" id="qStream"></div>';
-      var box=document.getElementById('qStream'), reader=resp.body.getReader(), dec=new TextDecoder(), txt='';
-      for(;;){ var ch=await reader.read(); if(ch.done)break; txt+=dec.decode(ch.value,{stream:true}); box.innerHTML=mdLite(txt); qBody.scrollTop=qBody.scrollHeight; }
+      answer.innerHTML='<div class="aitext"></div>';
+      var box=answer.querySelector('.aitext'), reader=resp.body.getReader(), dec=new TextDecoder(), txt='';
+      for(;;){ var ch=await reader.read(); if(ch.done)break; txt+=dec.decode(ch.value,{stream:true}); box.innerHTML=mdLite(txt); scrollChat(); }
       if(!(txt||'').trim())throw new Error('空响应');
+      chatHistory.push({role:'user',text:q},{role:'assistant',text:txt.trim()});
     }catch(err){
-      qBody.innerHTML='<div class="aierr">解答失败（'+err.message+'）。请确认已排盘、解读接口已部署。</div>';
-    }finally{ qBtn.disabled=false; }
+      answer.innerHTML='<div class="aierr">解答失败（'+err.message+'）。请确认已排盘、解读接口已部署。</div>';
+    }finally{ chatBusy=false; qBtn.disabled=false; qInput.focus(); }
   }
-  document.getElementById('qBtn').onclick=askQuestion;
-  Array.prototype.forEach.call(document.querySelectorAll('.qchip'),function(c){
-    c.onclick=function(){var i=document.getElementById('qInput'); i.value=c.textContent; i.focus();};
+  document.getElementById('qBtn').onclick=function(){askQuestion();};
+  document.getElementById('qBody').addEventListener('click',function(e){
+    if(e.target&&e.target.classList.contains('qchip')) askQuestion(e.target.textContent);
   });
   document.getElementById('qInput').addEventListener('keydown',function(e){
-    if((e.metaKey||e.ctrlKey)&&e.key==='Enter') askQuestion();
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askQuestion();}
   });
+  document.getElementById('qInput').addEventListener('input',fitQuestionInput);
 
   addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 
