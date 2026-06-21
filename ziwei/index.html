@@ -27,6 +27,7 @@
   .fld label{width:42px;flex:none;}
   .fld input,.fld select{flex:1;background:rgba(120,110,180,0.10);color:var(--ink);
     border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:12.5px;font-family:inherit;}
+  .hint{margin-top:6px;font-size:10.5px;line-height:1.5;color:rgba(155,148,194,.78);}
   .gbtn{display:flex;gap:6px;flex:1;}
   .gbtn button{flex:1;background:rgba(120,110,180,0.10);color:var(--ink);border:1px solid var(--line);
     border-radius:8px;padding:7px 0;font-size:12.5px;cursor:pointer;font-family:inherit;}
@@ -216,6 +217,13 @@
   <div class="fld"><label>性别</label>
     <div class="gbtn"><button id="gM" class="on" data-g="男">男</button><button id="gF" data-g="女">女</button></div>
   </div>
+  <div class="fld"><label>年分界</label>
+    <select id="iYearDivide">
+      <option value="normal" selected>按春节（农历·默认）</option>
+      <option value="exact">按立春（八字）</option>
+    </select>
+  </div>
+  <div class="hint">生在立春~春节之间，两种算法生肖/生年不同；不确定就用默认。</div>
   <div class="fld"><label>流年</label><input id="iYear" type="number" value="2026" min="1900" max="2100"></div>
   <div class="fld"><label>解读</label><input id="iEndpoint" type="text" value="https://ziwei-interpreter.imperfectnotes.workers.dev" placeholder="解读接口URL（可选·留空仅预览可用）"></div>
   <button id="go">排　盘</button>
@@ -421,6 +429,7 @@
   var CHART=null;
   function bi(branch){return DZHI.indexOf(branch);}
   function computeChart(dateStr, timeIdx, gender, year){
+    window.iztro.astro.config({yearDivide:(document.getElementById('iYearDivide').value||'normal')});
     var a=window.iztro.astro.bySolar(dateStr, timeIdx, gender, true, 'zh-CN');
     var h=a.horoscope(year+'-07-01');
     var idxToBranch=a.palaces.map(function(p){return bi(p.earthlyBranch);});
