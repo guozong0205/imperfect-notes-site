@@ -735,11 +735,18 @@
         resp=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json'},
           body:JSON.stringify({system:sys,user:user,max_tokens:2000,stream:true})});
         if(!resp.ok){var ej=await resp.json().catch(function(){return{};});throw new Error(ej.error||('HTTP '+resp.status));}
-        // 先铺好解读面板，再把流式文本往里灌
-        aiBody.innerHTML='<div class="aihead">✦ AI 详细解说 · '+fb.scope+'<button id="aiClose">收起</button></div><div class="aitext" id="aiStream"></div>';
-        document.getElementById('aiClose').onclick=function(){aiBody.style.display='none';};
-        var box=document.getElementById('aiStream'), reader=resp.body.getReader(), dec=new TextDecoder(); txt='';
-        for(;;){ var ch=await reader.read(); if(ch.done)break; txt+=dec.decode(ch.value,{stream:true}); box.innerHTML=mdLite(txt); aiBody.scrollTop=aiBody.scrollHeight; }
+        // 首个有效文本到达前保留加载提示，避免模型思考阶段出现空白泡泡。
+        var box=null, reader=resp.body.getReader(), dec=new TextDecoder(); txt='';
+        for(;;){
+          var ch=await reader.read(); if(ch.done)break;
+          txt+=dec.decode(ch.value,{stream:true});
+          if((txt||'').trim()&&!box){
+            aiBody.innerHTML='<div class="aihead">✦ AI 详细解说 · '+fb.scope+'<button id="aiClose">收起</button></div><div class="aitext" id="aiStream"></div>';
+            document.getElementById('aiClose').onclick=function(){aiBody.style.display='none';};
+            box=document.getElementById('aiStream');
+          }
+          if(box){ box.innerHTML=mdLite(txt); aiBody.scrollTop=aiBody.scrollHeight; }
+        }
         txt=(txt||'').trim(); if(!txt)throw new Error('空响应'); return;
       } else {
         // 仅在 Claude Artifacts 预览沙箱内可用的免密钥直连
@@ -863,9 +870,16 @@
       var resp=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({system:sys,user:user,max_tokens:2000,stream:true})});
       if(!resp.ok){var ej=await resp.json().catch(function(){return{};});throw new Error(ej.error||('HTTP '+resp.status));}
-      answer.innerHTML='<div class="aitext"></div>';
-      var box=answer.querySelector('.aitext'), reader=resp.body.getReader(), dec=new TextDecoder(), txt='';
-      for(;;){ var ch=await reader.read(); if(ch.done)break; txt+=dec.decode(ch.value,{stream:true}); box.innerHTML=mdLite(txt); scrollChat(); }
+      var box=null, reader=resp.body.getReader(), dec=new TextDecoder(), txt='';
+      for(;;){
+        var ch=await reader.read(); if(ch.done)break;
+        txt+=dec.decode(ch.value,{stream:true});
+        if((txt||'').trim()&&!box){
+          answer.innerHTML='<div class="aitext"></div>';
+          box=answer.querySelector('.aitext');
+        }
+        if(box){ box.innerHTML=mdLite(txt); scrollChat(); }
+      }
       if(!(txt||'').trim())throw new Error('空响应');
       chatHistory.push({role:'user',text:q},{role:'assistant',text:txt.trim()});
     }catch(err){
