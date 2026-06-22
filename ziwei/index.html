@@ -164,14 +164,19 @@
     .chatTop{flex:none;margin-bottom:8px;}
     .asklabel{font-size:11px;}
     #qBody{flex:1;min-height:0;max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 0 12px;gap:9px;}
+    body.chat-empty #qBody{justify-content:center;align-items:center;padding-bottom:clamp(36px,10dvh,92px);}
     .chatMsg{max-width:90%;font-size:14px;line-height:1.68;padding:10px 12px;border-radius:15px;}
+    body.chat-empty .chatMsg.assistant.welcome{max-width:min(320px,88vw);text-align:center;}
     .chatMsg .aitext{font-size:14px;line-height:1.68;}
-    .qchips{gap:8px;margin-top:2px;}
-    .qchip{max-width:100%;white-space:normal;font-size:13px;line-height:1.35;padding:8px 11px;border-radius:16px;}
+    .qchips{gap:6px;margin-top:0;justify-content:center;}
+    body.chat-empty .qchips{width:min(360px,calc(100vw - 20px));max-width:none;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+    body.chat-empty .qchips::-webkit-scrollbar{display:none;}
+    .qchip{max-width:100%;white-space:normal;font-size:12px;line-height:1.25;padding:6px 9px;border-radius:15px;}
+    body.chat-empty .qchip{flex:0 0 auto;max-width:none;white-space:nowrap;}
     .chatComposer{position:sticky;bottom:0;flex:none;grid-template-columns:minmax(0,1fr) 58px;gap:8px;margin-top:0;
-      padding-top:9px;background:linear-gradient(180deg,rgba(7,7,15,0),rgba(7,7,15,.96) 22%);}
-    #qInput{min-height:46px;max-height:120px;font-size:16px;line-height:1.42;padding:11px 12px;border-radius:13px;}
-    #qBtn{min-height:46px;height:46px;min-width:54px;font-size:13px;border-radius:13px;padding:0 8px;}
+      padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(7,7,15,0),rgba(7,7,15,.96) 22%);}
+    #qInput{min-height:52px;max-height:126px;font-size:16px;line-height:1.5;padding:13px 12px 14px;border-radius:13px;}
+    #qBtn{min-height:52px;height:52px;min-width:54px;font-size:13px;border-radius:13px;padding:0 8px;}
     #read,#ctrl,#info{display:none;}
     body.mobile-chart-open #app{display:block;position:fixed;inset:0;z-index:40;background:var(--bg);}
     body.mobile-chart-open #mobileChartBar{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;
@@ -219,8 +224,8 @@
   </div>
   <div class="fld"><label>年分界</label>
     <select id="iYearDivide">
-      <option value="normal" selected>按春节（农历·默认）</option>
-      <option value="exact">按立春（八字）</option>
+      <option value="normal">按春节（农历·默认）</option>
+      <option value="exact" selected>按立春（八字）</option>
     </select>
   </div>
   <div class="hint">生在立春~春节之间，两种算法生肖/生年不同；不确定就用默认。</div>
@@ -272,7 +277,7 @@
   </div>
   <div id="qBody"></div>
   <div class="chatComposer">
-    <textarea id="qInput" rows="1" placeholder="想知道什么？比如：我今年的感情运势…"></textarea>
+    <textarea id="qInput" rows="1" placeholder="问问你的命盘，比如今年运势…"></textarea>
     <button id="qBtn" type="button" disabled>发送</button>
   </div>
 </div>
@@ -773,6 +778,7 @@
   function resetChat(){
     chatHistory=[]; chatBusy=false;
     var ask=document.getElementById('ask'),qBody=document.getElementById('qBody'),qInput=document.getElementById('qInput'),qBtn=document.getElementById('qBtn');
+    document.body.classList.add('chat-empty');
     ask.classList.add('ready'); qInput.value=''; qInput.style.height=''; qBtn.disabled=false;
     qBody.innerHTML='';
     addChatBubble('assistant','你的盘排好了，看不懂没关系，直接问我 👇','welcome');
@@ -782,6 +788,13 @@
   }
   function chatContext(){
     return chatHistory.slice(-8).map(function(m){return (m.role==='user'?'用户':'命盘')+'：'+m.text;}).join('\n\n');
+  }
+  function leaveMobileEmptyChat(){
+    if(!isMobileLayout()||!document.body.classList.contains('chat-empty'))return;
+    var qBody=document.getElementById('qBody');
+    var welcome=qBody.querySelector('.welcome'),chips=qBody.querySelector('.qchips');
+    if(welcome)welcome.remove(); if(chips)chips.remove();
+    document.body.classList.remove('chat-empty');
   }
   function fitQuestionInput(){
     var i=document.getElementById('qInput'); i.style.height='auto'; i.style.height=Math.min(i.scrollHeight,118)+'px';
@@ -839,6 +852,7 @@
     var ep=(document.getElementById('iEndpoint').value||'').trim();
     var qBtn=document.getElementById('qBtn'); qBtn.disabled=true; chatBusy=true;
     qInput.value=''; fitQuestionInput();
+    leaveMobileEmptyChat();
     addChatBubble('user',esc(q));
     var answer=addChatBubble('assistant','<div class="aiload">正在帮你看盘，马上回你…</div>');
     var sys='你是一位很懂紫微斗数、但特别会把命理讲成人话的朋友。下面这张命盘由算法精准排定，所有星曜、宫位、四化都准确无误——你绝不可改动、杜撰或臆造任何星曜与落宫，只能在这些事实上解读。回答用户的具体问题时请：①先用一两句大白话给结论，再补命理依据；②凡提到星曜/宫位/四化等术语，随手用一句话解释它是什么（如「七杀（一颗主冲劲、爱打硬仗的星）」），别让人看不懂；③多用生活化比喻，像朋友喝茶聊天那样温暖、有共情，可适度轻松幽默（会心一笑即可，别油腻、别贩卖焦虑）；④给具体能做的小建议；⑤避免宿命论和把话说死，多用「容易/倾向/适合/不妨」。先点出问题对应的宫位（人际看仆役/兄弟宫、感情看夫妻宫、事业看官禄宫、财运看财帛宫、健康看疾厄宫等），结合三方四正、四化与当下大限流年来谈。用「## 小标题」分节，约400–600字。结尾用一句轻松温暖的话收尾，并轻轻提醒这是传统命理的参考、人生还是自己说了算。';
