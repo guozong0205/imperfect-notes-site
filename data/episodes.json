@@ -2,6 +2,19 @@
   "schema": "imperfect_notes.episodes.v1",
   "episodes": [
     {
+      "ep": 20,
+      "episode": "第20期",
+      "titleZh": "第二十期特别版本｜未来与古典的碰撞",
+      "titleEn": "Held in the Vastness",
+      "description": "Electronic Music for Deep Focus & Study",
+      "mp3Url": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep20.mp3",
+      "cover": "assets/covers/ep20.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Q5RDC83ty1w",
+      "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep20_desktop_4k.jpg",
+      "publishDate": "2026-06-30",
+      "active": true
+    },
+    {
       "ep": 19,
       "episode": "第19期",
       "titleZh": "翼下守护｜弱音小号与钢琴，给深夜、专注与入眠",
@@ -12,7 +25,7 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=zYfi7VKE6SA",
       "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep19_desktop_4k.jpg",
       "publishDate": "2026-06-25",
-      "active": true
+      "active": false
     },
     {
       "ep": 18,
