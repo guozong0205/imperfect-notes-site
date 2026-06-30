@@ -230,7 +230,7 @@
   </div>
   <div class="hint">生在立春~春节之间，两种算法生肖/生年不同；不确定就用默认。</div>
   <div class="fld"><label>流年</label><input id="iYear" type="number" value="2026" min="1900" max="2100"></div>
-  <div class="fld"><label>解读</label><input id="iEndpoint" type="text" value="https://ziwei-interpreter.imperfectnotes.workers.dev" placeholder="解读接口URL（可选·留空仅预览可用）"></div>
+  <div class="fld"><label>解读</label><input id="iEndpoint" type="text" value="https://ziwei-interpreter.imperfectnotes.workers.dev" placeholder="解读接口URL（需后端代理，密钥放服务器端）"></div>
   <button id="go">排　盘</button>
   <div id="summary"></div>
 </div>
@@ -748,21 +748,14 @@
           if(box){ box.innerHTML=mdLite(txt); aiBody.scrollTop=aiBody.scrollHeight; }
         }
         txt=(txt||'').trim(); if(!txt)throw new Error('空响应'); return;
-      } else {
-        // 仅在 Claude Artifacts 预览沙箱内可用的免密钥直连
-        resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:2000,system:sys,messages:[{role:'user',content:user}]})});
-        if(!resp.ok)throw new Error('HTTP '+resp.status);
-        var d=await resp.json();
-        txt=(d.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n');
-      }
+      } else throw new Error('未配置解读接口');
       txt=(txt||'').trim(); if(!txt)throw new Error('空响应');
       aiBody.innerHTML='<div class="aihead">✦ AI 详细解说 · '+fb.scope+'<button id="aiClose">收起</button></div><div class="aitext">'+mdLite(txt)+'</div>';
       document.getElementById('aiClose').onclick=function(){aiBody.style.display='none';};
     }catch(err){
       var hint = ep
         ? 'AI 详细解说失败（'+err.message+'）。请检查解读接口是否已部署、密钥是否配置、CORS 是否放行本站。'
-        : 'AI 详细解说暂不可用（'+err.message+'）。浏览器直连 Anthropic 会被跨域拦截——请在上方「解读接口」填入你部署的 Cloudflare Worker 地址（密钥放服务器端），即可在线下与生产环境正常使用。';
+        : 'AI 详细解说暂不可用（'+err.message+'）。请在上方「解读接口」填入你部署的 Cloudflare Worker 地址；模型密钥必须放服务器端，页面不会再直连任何模型厂商。';
       aiBody.innerHTML='<div class="aierr">'+hint+'</div>';
     }
   }

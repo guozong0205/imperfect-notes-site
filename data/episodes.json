@@ -2,6 +2,32 @@
   "schema": "imperfect_notes.episodes.v1",
   "episodes": [
     {
+      "ep": 19,
+      "episode": "第19期",
+      "titleZh": "翼下守护｜弱音小号与钢琴，给深夜、专注与入眠",
+      "titleEn": "Under Quiet Wings",
+      "description": "Warm Muted Trumpet & Piano for Deep Focus, Late Night & Rest",
+      "mp3Url": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep19.mp3",
+      "cover": "assets/covers/ep19.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=zYfi7VKE6SA",
+      "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep19_desktop_4k.jpg",
+      "publishDate": "2026-06-25",
+      "active": true
+    },
+    {
+      "ep": 18,
+      "episode": "第18期",
+      "titleZh": "Where Quiet Lives｜烛光书房里的古典吉他二重奏",
+      "titleEn": "Where Quiet Lives",
+      "description": "Candlelit Classical Guitar Duets for Deep Focus, Reading & Study",
+      "mp3Url": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep18.mp3",
+      "cover": "assets/covers/ep18.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ZNHUFKtWm6c",
+      "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep18_desktop_4k.jpg",
+      "publishDate": "2026-06-24",
+      "active": false
+    },
+    {
       "ep": 17,
       "episode": "第17期",
       "titleZh": "Stay a While | 月夜裡的鋼琴與古典吉他",
@@ -12,7 +38,7 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=EtRRsfCPC-E",
       "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep17_desktop_4k.jpg",
       "publishDate": "2026-06-19",
-      "active": true
+      "active": false
     },
     {
       "ep": 16,
