@@ -2,6 +2,19 @@
   "schema": "imperfect_notes.episodes.v1",
   "episodes": [
     {
+      "ep": 21,
+      "episode": "第21期",
+      "titleZh": "月光书页 | 适合专注阅读的古典吉他二重奏",
+      "titleEn": "1 Hour Classical Guitar Music for Deep Focus & Reading",
+      "description": "Moonlit Pages",
+      "mp3Url": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep21.mp3",
+      "cover": "assets/covers/ep21.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=VqdxGwhJ-Dw",
+      "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep21_desktop_4k.jpg",
+      "publishDate": "2026-07-07",
+      "active": true
+    },
+    {
       "ep": 20,
       "episode": "第20期",
       "titleZh": "第二十期特别版本｜未来与古典的碰撞",
@@ -12,7 +25,7 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=Q5RDC83ty1w",
       "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep20_desktop_4k.jpg",
       "publishDate": "2026-06-30",
-      "active": true
+      "active": false
     },
     {
       "ep": 19,
