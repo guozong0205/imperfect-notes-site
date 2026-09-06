@@ -987,7 +987,7 @@ body.hero-bg-d {
 }
 
 .wallpaper-section {
-  margin-top: var(--sp-6);
+  margin-top: 0;
   padding: var(--sp-5);
   border: 1px solid var(--line);
   border-radius: 4px;
