@@ -2,6 +2,19 @@
   "schema": "imperfect_notes.episodes.v1",
   "episodes": [
     {
+      "ep": 24,
+      "episode": "第24期",
+      "titleZh": "巨像之梦｜钢琴与古典吉他的梦幻古典音乐",
+      "titleEn": "Dreamy Classical Piano & Guitar for Deep Focus",
+      "description": "A Dream of the Colossus",
+      "mp3Url": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep24.mp3",
+      "cover": "assets/covers/ep24.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=FvIwvtltAlA",
+      "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep24_desktop_4k.jpg",
+      "publishDate": "2026-09-06",
+      "active": true
+    },
+    {
       "ep": 23,
       "episode": "第23期",
       "titleZh": "群星也在聆听｜钢琴与小提琴的浪漫古典爵士夜曲",
@@ -12,7 +25,7 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=H5UgtA7kp34",
       "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep23_desktop_4k.jpg",
       "publishDate": "2026-08-28",
-      "active": true
+      "active": false
     },
     {
       "ep": 22,
