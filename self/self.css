@@ -1,6 +1,6 @@
 :root {
-  --self-bg: #fbf3e6;
-  --self-paper: #fffaf1;
+  --self-bg: #cbc6be;
+  --self-paper: #d7d2ca;
   --self-ink: #3b3028;
   --self-muted: #77695f;
   --self-line: rgba(75, 57, 42, 0.18);
@@ -12,13 +12,13 @@
 
 body.self-body {
   background:
-    radial-gradient(circle at 78% 12%, rgba(216, 172, 161, 0.22), transparent 28%),
-    linear-gradient(180deg, #fff7ea, var(--self-bg));
+    radial-gradient(circle at 78% 12%, rgba(180, 142, 126, 0.18), transparent 28%),
+    linear-gradient(180deg, #d8d2c9, var(--self-bg));
   color: var(--self-ink);
 }
 
 body.privacy-body {
-  background: linear-gradient(180deg, #fff7ea, var(--self-bg));
+  background: linear-gradient(180deg, #d8d2c9, var(--self-bg));
 }
 
 body.self-body::before {
