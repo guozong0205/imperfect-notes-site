@@ -465,6 +465,36 @@ body.hero-bg-d {
   transform: none;
 }
 
+.work-card--cover {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(143, 151, 176, 0.28);
+  background:
+    radial-gradient(circle at 78% 18%, rgba(99, 102, 241, 0.18), transparent 32%),
+    linear-gradient(145deg, rgba(17, 21, 30, 0.82), rgba(10, 13, 18, 0.96));
+  color: rgba(226, 230, 238, 0.76);
+}
+
+.work-card--cover::after {
+  content: "";
+  position: absolute;
+  right: clamp(var(--sp-4), 3vw, var(--sp-5));
+  bottom: clamp(var(--sp-4), 3vw, var(--sp-5));
+  width: 54px;
+  height: 54px;
+  border: 1px solid rgba(216, 220, 226, 0.16);
+  border-radius: 50%;
+  background:
+    linear-gradient(180deg, rgba(216, 220, 226, 0.12), transparent 46%),
+    radial-gradient(circle at 50% 34%, rgba(216, 220, 226, 0.24), transparent 18%);
+  opacity: 0.46;
+  pointer-events: none;
+}
+
+.work-card--cover:hover {
+  border-color: rgba(212, 168, 120, 0.42);
+}
+
 .work-card__name,
 .work-card__desc {
   margin: 0;
