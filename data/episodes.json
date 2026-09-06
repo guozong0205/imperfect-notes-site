@@ -2,6 +2,19 @@
   "schema": "imperfect_notes.episodes.v1",
   "episodes": [
     {
+      "ep": 23,
+      "episode": "第23期",
+      "titleZh": "群星也在聆听｜钢琴与小提琴的浪漫古典爵士夜曲",
+      "titleEn": "1 Hour Romantic Classical Jazz for Deep Focus",
+      "description": "Where the Stars Listen",
+      "mp3Url": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep23.mp3",
+      "cover": "assets/covers/ep23.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=H5UgtA7kp34",
+      "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep23_desktop_4k.jpg",
+      "publishDate": "2026-08-28",
+      "active": true
+    },
+    {
       "ep": 22,
       "episode": "第22期",
       "titleZh": "唯有音乐｜爵士钢琴与古典旋律的交织",
@@ -12,7 +25,7 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=v3AmTP3M0i4",
       "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep22_desktop_4k.jpg",
       "publishDate": "2026-07-27",
-      "active": true
+      "active": false
     },
     {
       "ep": 21,
