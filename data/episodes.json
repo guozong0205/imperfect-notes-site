@@ -2,6 +2,19 @@
   "schema": "imperfect_notes.episodes.v1",
   "episodes": [
     {
+      "ep": 25,
+      "episode": "第25期",
+      "titleZh": "雨中夜曲｜适合阅读与专注的雨夜爵士纯音乐",
+      "titleEn": "Nocturne Jazz for Deep Focus & Reading",
+      "description": "Nocturne in the Rain",
+      "mp3Url": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/ep25.mp3",
+      "cover": "assets/covers/ep25.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=po9IW5M4e_s",
+      "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep25_desktop_4k.jpg",
+      "publishDate": "2026-09-12",
+      "active": true
+    },
+    {
       "ep": 24,
       "episode": "第24期",
       "titleZh": "巨像之梦｜钢琴与古典吉他的梦幻古典音乐",
@@ -12,7 +25,7 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=FvIwvtltAlA",
       "wallpaperUrl": "https://raw.githubusercontent.com/guozong0205/imperfect-notes-assets/main/wallpapers/imperfect_notes_ep24_desktop_4k.jpg",
       "publishDate": "2026-09-06",
-      "active": true
+      "active": false
     },
     {
       "ep": 23,
