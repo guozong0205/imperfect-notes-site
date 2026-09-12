@@ -183,6 +183,8 @@ if (archiveToggle) {
     timeTotal.textContent = "0:00";
     currentIndex = index;
 
+    document.dispatchEvent(new CustomEvent("imperfectnotes:trackchange"));
+
     if (autoplay) {
       audio.play().catch(() => {});
     }
@@ -255,8 +257,66 @@ if (archiveToggle) {
 // document never unloads, playback remains genuinely continuous.
 (function enableContinuousPageNavigation() {
   const homePath = new URL("./", window.location.href).pathname;
+  const audio = document.getElementById("player-audio");
+  const mainPlayButton = document.getElementById("btn-play");
+  const mainPrevButton = document.getElementById("btn-prev");
+  const mainNextButton = document.getElementById("btn-next");
   let pageLayer = null;
   let pageFrame = null;
+  let miniPlayer = null;
+  let miniPlayerDismissed = false;
+
+  function syncMiniPlayer() {
+    if (!miniPlayer) return;
+
+    const cover = document.getElementById("player-cover");
+    const episode = document.getElementById("player-ep");
+    const title = document.getElementById("player-title");
+    const miniCover = miniPlayer.querySelector(".mini-player__cover");
+    const miniEpisode = miniPlayer.querySelector(".mini-player__episode");
+    const miniTitle = miniPlayer.querySelector(".mini-player__title");
+    const miniPlay = miniPlayer.querySelector(".mini-player__play");
+
+    miniCover.src = cover.currentSrc || cover.src;
+    miniCover.alt = cover.alt;
+    miniEpisode.textContent = episode.textContent;
+    miniTitle.textContent = title.textContent;
+    miniPlay.textContent = audio.paused ? "▶" : "❚❚";
+    miniPlay.setAttribute("aria-label", audio.paused ? "繼續播放" : "暫停");
+    miniPlayer.hidden = miniPlayerDismissed;
+  }
+
+  function createMiniPlayer() {
+    const player = document.createElement("aside");
+    player.className = "mini-player";
+    player.setAttribute("aria-label", "音樂播放器");
+    player.innerHTML = `
+      <img class="mini-player__cover" alt="">
+      <div class="mini-player__info">
+        <span class="mini-player__episode"></span>
+        <strong class="mini-player__title"></strong>
+      </div>
+      <div class="mini-player__controls">
+        <button class="mini-player__button mini-player__prev" type="button" aria-label="上一首">◀◀</button>
+        <button class="mini-player__button mini-player__play" type="button" aria-label="暫停">❚❚</button>
+        <button class="mini-player__button mini-player__next" type="button" aria-label="下一首">▶▶</button>
+        <button class="mini-player__close" type="button" aria-label="關閉音樂">×</button>
+      </div>
+    `;
+
+    player.querySelector(".mini-player__prev").addEventListener("click", () => mainPrevButton.click());
+    player.querySelector(".mini-player__play").addEventListener("click", () => mainPlayButton.click());
+    player.querySelector(".mini-player__next").addEventListener("click", () => mainNextButton.click());
+    player.querySelector(".mini-player__close").addEventListener("click", () => {
+      audio.pause();
+      miniPlayerDismissed = true;
+      player.hidden = true;
+    });
+
+    miniPlayer = player;
+    syncMiniPlayer();
+    return player;
+  }
 
   function isHome(url) {
     return url.pathname === homePath || url.pathname === `${homePath}index.html`;
@@ -288,6 +348,7 @@ if (archiveToggle) {
       pageFrame = document.createElement("iframe");
       pageFrame.className = "page-layer__frame";
       pageFrame.title = "Imperfect Notes 站內頁面";
+      pageLayer.appendChild(createMiniPlayer());
       pageLayer.appendChild(pageFrame);
       document.body.appendChild(pageLayer);
       document.body.classList.add("has-page-layer");
@@ -341,6 +402,15 @@ if (archiveToggle) {
       openPage(url, false);
     }
   });
+
+  if (audio) {
+    audio.addEventListener("play", () => {
+      miniPlayerDismissed = false;
+      syncMiniPlayer();
+    });
+    audio.addEventListener("pause", syncMiniPlayer);
+    document.addEventListener("imperfectnotes:trackchange", syncMiniPlayer);
+  }
 })();
 
 if (subscribeForm) {
