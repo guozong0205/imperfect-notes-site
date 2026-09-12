@@ -67,7 +67,6 @@ if (archiveToggle) {
   const epLabel = document.getElementById("player-ep");
   const title = document.getElementById("player-title");
   const desc = document.getElementById("player-desc");
-  const ytLink = document.getElementById("player-yt");
   const btnPlay = document.getElementById("btn-play");
   const btnPrev = document.getElementById("btn-prev");
   const btnNext = document.getElementById("btn-next");
@@ -177,7 +176,6 @@ if (archiveToggle) {
     epLabel.textContent = `EP.${track.dataset.ep}`;
     title.textContent = track.querySelector("strong").textContent;
     desc.textContent = track.dataset.desc || "";
-    ytLink.href = track.dataset.youtube || "#";
     source.src = track.dataset.src;
     audio.load();
     progress.value = 0;
@@ -249,6 +247,99 @@ if (archiveToggle) {
 
   audio.addEventListener("pause", () => {
     btnPlay.textContent = "▶";
+  });
+})();
+
+// Keep the homepage audio element alive while visitors browse another page.
+// Cross-document pages are presented in a same-origin layer; because the parent
+// document never unloads, playback remains genuinely continuous.
+(function enableContinuousPageNavigation() {
+  const homePath = new URL("./", window.location.href).pathname;
+  let pageLayer = null;
+  let pageFrame = null;
+
+  function isHome(url) {
+    return url.pathname === homePath || url.pathname === `${homePath}index.html`;
+  }
+
+  function closePage(updateHistory = true) {
+    if (!pageLayer) return;
+    pageLayer.remove();
+    pageLayer = null;
+    pageFrame = null;
+    document.body.classList.remove("has-page-layer");
+    if (updateHistory && !isHome(new URL(window.location.href))) {
+      history.pushState({ continuousPage: false }, "", homePath);
+    }
+  }
+
+  function openPage(url, updateHistory = true) {
+    if (isHome(url)) {
+      closePage(updateHistory);
+      return;
+    }
+
+    if (!pageLayer) {
+      pageLayer = document.createElement("div");
+      pageLayer.className = "page-layer";
+      pageLayer.setAttribute("role", "dialog");
+      pageLayer.setAttribute("aria-label", "站內頁面");
+
+      pageFrame = document.createElement("iframe");
+      pageFrame.className = "page-layer__frame";
+      pageFrame.title = "Imperfect Notes 站內頁面";
+      pageLayer.appendChild(pageFrame);
+      document.body.appendChild(pageLayer);
+      document.body.classList.add("has-page-layer");
+
+      pageFrame.addEventListener("load", () => {
+        let frameUrl;
+        try {
+          frameUrl = new URL(pageFrame.contentWindow.location.href);
+        } catch {
+          return;
+        }
+
+        if (frameUrl.origin !== window.location.origin) return;
+        if (isHome(frameUrl)) {
+          closePage(true);
+          return;
+        }
+
+        const nextPath = `${frameUrl.pathname}${frameUrl.search}${frameUrl.hash}`;
+        const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+        if (nextPath !== currentPath) {
+          history.replaceState({ continuousPage: true }, "", nextPath);
+        }
+      });
+    }
+
+    pageFrame.src = url.href;
+    if (updateHistory) {
+      history.pushState({ continuousPage: true }, "", `${url.pathname}${url.search}${url.hash}`);
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[href]");
+    if (!link || event.defaultPrevented || link.target || link.hasAttribute("download")) return;
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    const url = new URL(link.href, window.location.href);
+    if (url.origin !== window.location.origin || url.hash && url.pathname === homePath) return;
+    if (isHome(url) && !pageLayer) return;
+
+    event.preventDefault();
+    openPage(url);
+  });
+
+  window.addEventListener("popstate", () => {
+    const url = new URL(window.location.href);
+    if (isHome(url)) {
+      closePage(false);
+    } else {
+      openPage(url, false);
+    }
   });
 })();
 
