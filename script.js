@@ -3,6 +3,7 @@ const extraEpisodes = document.querySelectorAll(".episode-card.is-extra");
 const subscribeForm = document.querySelector(".subscribe-form");
 const formNote = document.querySelector(".form-note");
 const heroChoice = new URLSearchParams(window.location.search).get("hero");
+const siteRootUrl = new URL("./", document.currentScript.src);
 
 if (heroChoice === "a" || heroChoice === "b" || heroChoice === "c" || heroChoice === "d") {
   document.body.classList.remove("hero-bg-a", "hero-bg-b", "hero-bg-c", "hero-bg-d");
@@ -89,7 +90,7 @@ if (archiveToggle) {
       item.classList.add("is-active");
     }
     item.dataset.ep = String(episode.ep).padStart(2, "0");
-    item.dataset.cover = episode.cover;
+    item.dataset.cover = new URL(episode.cover, siteRootUrl).href;
     item.dataset.src = episode.mp3Url;
     item.dataset.youtube = episode.youtubeUrl;
     item.dataset.desc = episode.description || "";
@@ -167,9 +168,9 @@ if (archiveToggle) {
     }
 
     cover.style.opacity = "0";
+    cover.src = track.dataset.cover;
+    cover.alt = `EP.${track.dataset.ep} cover`;
     setTimeout(() => {
-      cover.src = track.dataset.cover;
-      cover.alt = `EP.${track.dataset.ep} cover`;
       cover.style.opacity = "1";
     }, 200);
 
@@ -264,7 +265,7 @@ if (archiveToggle) {
   let pageLayer = null;
   let pageFrame = null;
   let miniPlayer = null;
-  let miniPlayerDismissed = false;
+  let miniPlayerDismissed = true;
 
   function syncMiniPlayer() {
     if (!miniPlayer) return;
@@ -287,6 +288,8 @@ if (archiveToggle) {
   }
 
   function createMiniPlayer() {
+    if (miniPlayer) return miniPlayer;
+
     const player = document.createElement("aside");
     player.className = "mini-player";
     player.setAttribute("aria-label", "音樂播放器");
@@ -314,6 +317,7 @@ if (archiveToggle) {
     });
 
     miniPlayer = player;
+    document.body.appendChild(player);
     syncMiniPlayer();
     return player;
   }
@@ -348,7 +352,6 @@ if (archiveToggle) {
       pageFrame = document.createElement("iframe");
       pageFrame.className = "page-layer__frame";
       pageFrame.title = "Imperfect Notes 站內頁面";
-      pageLayer.appendChild(createMiniPlayer());
       pageLayer.appendChild(pageFrame);
       document.body.appendChild(pageLayer);
       document.body.classList.add("has-page-layer");
@@ -406,6 +409,7 @@ if (archiveToggle) {
   if (audio) {
     audio.addEventListener("play", () => {
       miniPlayerDismissed = false;
+      createMiniPlayer();
       syncMiniPlayer();
     });
     audio.addEventListener("pause", syncMiniPlayer);

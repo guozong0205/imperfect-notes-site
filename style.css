@@ -1977,10 +1977,10 @@ body.has-page-layer {
 }
 
 .mini-player {
-  position: absolute;
+  position: fixed;
   right: clamp(14px, 3vw, 40px);
   bottom: max(14px, env(safe-area-inset-bottom));
-  z-index: 2;
+  z-index: 10002;
   display: grid;
   grid-template-columns: 48px minmax(0, 230px) auto;
   align-items: center;
