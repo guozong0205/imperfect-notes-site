@@ -419,7 +419,7 @@ body.hero-bg-d {
 
 .works__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--sp-3);
 }
 
@@ -1165,6 +1165,37 @@ body.hero-bg-d {
 
 .site-footer p {
   margin: 0 0 var(--sp-1);
+}
+
+.site-footer__entity {
+  margin-top: var(--sp-2);
+}
+
+.site-footer__beian {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 18px;
+  margin-top: var(--sp-1);
+  color: var(--body);
+  font-size: var(--fs-2xs);
+}
+
+.site-footer__beian a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-footer__beian a:hover {
+  color: var(--warm);
+}
+
+.site-footer__beian img {
+  width: 16px;
+  height: 16px;
+  flex: none;
 }
 
 .sr-only {
