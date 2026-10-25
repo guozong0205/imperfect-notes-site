@@ -375,6 +375,41 @@ body.privacy-body::before {
   padding-top: 30px;
 }
 
+.privacy-page a {
+  color: var(--self-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.28em;
+}
+
+.privacy-beian {
+  margin-top: 28px;
+  color: var(--self-ink);
+  font-size: 13px;
+  line-height: 2;
+  text-align: center;
+}
+
+.privacy-beian p {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 16px;
+  margin: 0;
+}
+
+.privacy-beian a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+}
+
+.privacy-beian img {
+  width: 16px;
+  height: 16px;
+}
+
 .step-page {
   min-height: 100vh;
 }
