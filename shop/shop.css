@@ -1,0 +1,242 @@
+/* Sheet-music shop. Uses the night palette in style.css. */
+
+.shop-body {
+  color-scheme: dark;
+  scrollbar-color: var(--body) var(--bg);
+}
+
+.shop-body ::selection {
+  background: var(--warm);
+  color: var(--bg);
+}
+
+.shop-body :focus-visible {
+  outline: 1px solid var(--warm);
+  outline-offset: 3px;
+}
+
+.shop-shell {
+  width: min(40rem, calc(100% - 160px));
+  margin: 0 auto;
+}
+
+.shop-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 0 0;
+}
+
+.shop-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: var(--title);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.shop-mark img {
+  width: 40px;
+  height: 40px;
+  flex: none;
+}
+
+.shop-bar nav {
+  display: flex;
+  flex: none;
+  gap: 22px;
+  color: var(--body);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+}
+
+.shop-bar a {
+  transition: color 0.2s ease;
+}
+
+.shop-bar a:hover {
+  color: var(--warm);
+}
+
+.shop-main {
+  padding: 80px 0;
+}
+
+.shop-main h1,
+.shop-main h2,
+.shop-main h3 {
+  margin: 0;
+  color: var(--title);
+  font-family: var(--font-body);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+.shop-main h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+}
+
+.shop-main h2 {
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+}
+
+.shop-main p,
+.shop-main li {
+  max-width: 65ch;
+  margin: 0;
+  font-size: 16px;
+  line-height: 2;
+}
+
+.shop-main a {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.28em;
+  transition: color 0.2s ease;
+}
+
+.shop-main a:hover {
+  color: var(--warm);
+}
+
+.shop-lead {
+  margin-top: 28px !important;
+}
+
+.shop-meta {
+  margin-top: 8px !important;
+}
+
+.score-list {
+  display: grid;
+  gap: 0;
+  margin: 72px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.score-list > li {
+  padding: 36px 0;
+  border-top: 1px solid var(--line);
+}
+
+.score-list .shop-en,
+.score-sku {
+  margin-top: 10px !important;
+  color: var(--title);
+}
+
+.shop-en {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.shop-price {
+  margin-top: 18px !important;
+  color: var(--warm);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.75rem) !important;
+  font-style: italic;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  line-height: 1.2 !important;
+}
+
+.shop-price__note {
+  margin-top: 4px !important;
+}
+
+.score-list .shop-more,
+.shop-back {
+  display: inline-block;
+  margin-top: 16px !important;
+}
+
+.shop-block {
+  margin-top: 64px;
+}
+
+.shop-block h2 {
+  margin-bottom: 16px;
+}
+
+.shop-steps {
+  margin: 0;
+  padding-left: 1.25em;
+}
+
+.shop-steps li + li {
+  margin-top: 8px;
+}
+
+.pay-slot {
+  display: grid;
+  width: min(13.5rem, 100%);
+  min-height: 13.5rem;
+  margin: 24px 0;
+  place-items: center;
+  padding: 24px;
+  border: 1px dashed var(--body);
+  color: var(--body);
+  text-align: center;
+}
+
+.pay-slot p {
+  margin: 0;
+}
+
+.shop-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 64px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.shop-body .site-footer {
+  color: var(--body);
+}
+
+.shop-body .site-footer a {
+  text-decoration-line: underline;
+  text-underline-offset: 0.25em;
+  transition: color 0.2s ease;
+}
+
+.shop-body .site-footer a:hover {
+  color: var(--warm);
+}
+
+@media (max-width: 680px) {
+  .shop-shell {
+    width: min(40rem, calc(100% - 80px));
+  }
+
+  .shop-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .shop-main {
+    padding: 40px 0;
+  }
+
+  .score-list {
+    margin-top: 40px;
+  }
+
+  .shop-block,
+  .shop-links {
+    margin-top: 40px;
+  }
+}
