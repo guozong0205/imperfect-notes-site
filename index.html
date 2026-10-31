@@ -54,8 +54,25 @@
     <link rel="icon" type="image/svg+xml" href="assets/logo/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Noto+Serif+TC:wght@300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20261023-1">
+    <script>
+      (function () {
+        var choice = new URLSearchParams(location.search).get("hero");
+        var hero = choice === "b" || choice === "c" || choice === "d" ? choice : "a";
+        document.documentElement.setAttribute("data-hero", hero);
+        var link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "image";
+        link.type = "image/webp";
+        link.href = "assets/hero-statue-" + hero + ".webp";
+        link.setAttribute("fetchpriority", "high");
+        document.head.appendChild(link);
+      })();
+    </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Noto+Serif+TC:wght@300&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Noto+Serif+TC:wght@300&display=swap">
+    </noscript>
+    <link rel="stylesheet" href="style.css?v=20261031-lcp">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQFBQR7C37"></script>
     <script>
@@ -117,7 +134,10 @@
             <p>In the silence, something has always been there.</p>
           </div>
           <div class="player__cover">
-            <img id="player-cover" src="assets/covers/ep17.jpg" alt="EP.17 cover">
+            <picture>
+              <source id="player-cover-webp" type="image/webp" srcset="assets/covers/md/ep17.webp">
+              <img id="player-cover" src="assets/covers/md/ep17.jpg" alt="EP.17 cover" width="960" height="540" decoding="async" loading="lazy">
+            </picture>
           </div>
 
           <div class="player__panel">
@@ -151,7 +171,10 @@
       <section class="about section" id="about" aria-labelledby="about-title">
         <div class="section__inner about__grid">
           <div class="about__image">
-            <img src="assets/covers/about.jpg" alt="石像與花的主視覺" loading="lazy">
+            <picture>
+              <source srcset="assets/covers/about.webp" type="image/webp">
+              <img src="assets/covers/about.jpg" alt="石像與花的主視覺" width="1200" height="675" loading="lazy" decoding="async">
+            </picture>
           </div>
           <div class="about__copy">
             <h2 id="about-title"><span>關於這間工作室</span><span>About the Studio</span></h2>
@@ -195,6 +218,6 @@
       </p>
     </footer>
 
-    <script src="script.js?v=20260912-3"></script>
+    <script src="script.js?v=20261031-lcp"></script>
   </body>
 </html>

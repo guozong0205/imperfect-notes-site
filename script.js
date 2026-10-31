@@ -103,6 +103,36 @@ if (archiveToggle) {
     return item;
   }
 
+  const playerSizedCovers = new Set(["ep09", "ep10", "ep11", "ep17", "ep26"]);
+
+  function coverStem(cover) {
+    const file = new URL(cover, siteRootUrl).pathname.split("/").pop() || "";
+    return file.replace(/\.jpe?g$/i, "");
+  }
+
+  function coverAsset(stem, folder, ext) {
+    const path = folder ? `assets/covers/${folder}/${stem}.${ext}` : `assets/covers/${stem}.${ext}`;
+    return new URL(path, siteRootUrl).href;
+  }
+
+  function applyPlayerCover(coverUrl) {
+    const stem = coverStem(coverUrl);
+    const webp = document.getElementById("player-cover-webp");
+    const sized = playerSizedCovers.has(stem);
+
+    if (webp) {
+      if (sized) {
+        webp.srcset = coverAsset(stem, "md", "webp");
+        webp.media = "all";
+      } else {
+        webp.srcset = "";
+        webp.media = "not all";
+      }
+    }
+
+    cover.src = sized ? coverAsset(stem, "md", "jpg") : coverAsset(stem, "", "jpg");
+  }
+
   function createWallpaper(episode) {
     const link = document.createElement("a");
     link.href = episode.wallpaperUrl;
@@ -111,15 +141,25 @@ if (archiveToggle) {
     link.className = "wallpaper-item";
     link.title = `${episodeLabel(episode.ep)} — 下載`;
 
+    const stem = coverStem(episode.cover);
+    const picture = document.createElement("picture");
+    const source = document.createElement("source");
+    source.type = "image/webp";
+    source.srcset = coverAsset(stem, "sm", "webp");
+
     const image = document.createElement("img");
-    image.src = episode.cover;
+    image.src = coverAsset(stem, "sm", "jpg");
     image.alt = `${episodeLabel(episode.ep)} wallpaper`;
+    image.width = 480;
+    image.height = 270;
+    image.decoding = "async";
     image.loading = "lazy";
 
     const label = document.createElement("span");
     label.className = "wallpaper-label";
     label.textContent = `${episodeLabel(episode.ep)} ↓`;
-    link.append(image, label);
+    picture.append(source, image);
+    link.append(picture, label);
     return link;
   }
 
@@ -168,7 +208,7 @@ if (archiveToggle) {
     }
 
     cover.style.opacity = "0";
-    cover.src = track.dataset.cover;
+    applyPlayerCover(track.dataset.cover);
     cover.alt = `EP.${track.dataset.ep} cover`;
     setTimeout(() => {
       cover.style.opacity = "1";

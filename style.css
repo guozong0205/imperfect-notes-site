@@ -178,6 +178,80 @@ body.hero-bg-d {
   --hero-image: url("assets/hero-statue-d.jpg");
 }
 
+html[data-hero="a"] body {
+  --hero-image: url("assets/hero-statue-a.jpg");
+}
+
+html[data-hero="b"] body {
+  --hero-image: url("assets/hero-statue-b.jpg");
+}
+
+html[data-hero="c"] body {
+  --hero-image: url("assets/hero-statue-c.jpg");
+}
+
+html[data-hero="d"] body {
+  --hero-image: url("assets/hero-statue-d.jpg");
+}
+
+@supports (background-image: image-set(url("assets/hero-statue-a.webp") type("image/webp"))) {
+  body.hero-bg-a {
+    --hero-image: image-set(
+      url("assets/hero-statue-a.webp") type("image/webp"),
+      url("assets/hero-statue-a.jpg") type("image/jpeg")
+    );
+  }
+
+  body.hero-bg-b {
+    --hero-image: image-set(
+      url("assets/hero-statue-b.webp") type("image/webp"),
+      url("assets/hero-statue-b.jpg") type("image/jpeg")
+    );
+  }
+
+  body.hero-bg-c {
+    --hero-image: image-set(
+      url("assets/hero-statue-c.webp") type("image/webp"),
+      url("assets/hero-statue-c.jpg") type("image/jpeg")
+    );
+  }
+
+  body.hero-bg-d {
+    --hero-image: image-set(
+      url("assets/hero-statue-d.webp") type("image/webp"),
+      url("assets/hero-statue-d.jpg") type("image/jpeg")
+    );
+  }
+
+  html[data-hero="a"] body {
+    --hero-image: image-set(
+      url("assets/hero-statue-a.webp") type("image/webp"),
+      url("assets/hero-statue-a.jpg") type("image/jpeg")
+    );
+  }
+
+  html[data-hero="b"] body {
+    --hero-image: image-set(
+      url("assets/hero-statue-b.webp") type("image/webp"),
+      url("assets/hero-statue-b.jpg") type("image/jpeg")
+    );
+  }
+
+  html[data-hero="c"] body {
+    --hero-image: image-set(
+      url("assets/hero-statue-c.webp") type("image/webp"),
+      url("assets/hero-statue-c.jpg") type("image/jpeg")
+    );
+  }
+
+  html[data-hero="d"] body {
+    --hero-image: image-set(
+      url("assets/hero-statue-d.webp") type("image/webp"),
+      url("assets/hero-statue-d.jpg") type("image/jpeg")
+    );
+  }
+}
+
 .site-nav {
   position: absolute;
   top: 28px;
@@ -1379,6 +1453,12 @@ body.hero-bg-d {
   margin-top: var(--sp-1);
   color: var(--quiet);
   font-size: var(--fs-md);
+}
+
+.player__cover picture,
+.about__image picture,
+.wallpaper-item picture {
+  display: contents;
 }
 
 .player__cover img {
