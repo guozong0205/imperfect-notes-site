@@ -1,0 +1,10 @@
+commit 082fd05c17711c8bdbdafbbf1218306e1d1a17e5
+short 082fd05c1771
+commit_time 2026-10-31 08:32:11 +0800
+subject Speed up home LCP with smaller hero, cover thumbs, and non-blocking fonts (#7)
+files 125
+excluded .gitignore CNAME
+reason_excluded GitHub Pages returned 404 for both on 2026-11-16
+tarball imperfectnotes-site-082fd05c1771.tar.gz
+sha256 755911dd59013966f96b2d00c4fb7f594837a79ea68bb12bf853cf9a9975c470
+bytes 10892334

@@ -1,0 +1,24 @@
+[Unit]
+Description=Imperfect Notes static nginx (independent of masked system nginx)
+Documentation=man:nginx(8)
+After=network-online.target
+Wants=network-online.target
+ConditionFileIsExecutable=/usr/sbin/nginx
+ConditionPathExists=/etc/imperfectnotes/nginx.conf
+
+[Service]
+Type=forking
+PIDFile=/run/imperfectnotes-nginx.pid
+ExecStartPre=/usr/sbin/nginx -t -c /etc/imperfectnotes/nginx.conf
+ExecStart=/usr/sbin/nginx -c /etc/imperfectnotes/nginx.conf
+ExecReload=/usr/sbin/nginx -t -c /etc/imperfectnotes/nginx.conf
+ExecReload=/usr/sbin/nginx -s reload -c /etc/imperfectnotes/nginx.conf
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+RestartSec=2
+StartLimitIntervalSec=60
+StartLimitBurst=3
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
