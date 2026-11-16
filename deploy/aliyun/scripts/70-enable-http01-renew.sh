@@ -41,16 +41,34 @@ done
 rm -f "$webroot/.well-known/acme-challenge/$token"
 trap - EXIT
 
-certbot reconfigure \
+live_cert="/etc/letsencrypt/live/imperfectnotes.com/cert.pem"
+[ -f "$live_cert" ] || die "没有生产证书。不要为了切换续签方式重新签发。"
+cert_before="$(sha256sum "$live_cert" | awk '{print $1}')"
+
+# Certbot 2.9.0 keeps pref_challs from the renewal file unless this flag is
+# set on the command line. manual issuance stored dns-01, and the webroot
+# plugin only supports http-01. --preferred-challenges http is the documented
+# alias and is parsed by reconfigure even though that verb's short help omits it.
+if ! certbot reconfigure \
   --non-interactive \
   --cert-name imperfectnotes.com \
   --authenticator webroot \
   --webroot-path "$webroot" \
-  --deploy-hook "/bin/bash $ETC_DIR/reload-nginx.sh"
+  --preferred-challenges http \
+  --deploy-hook "/bin/bash $ETC_DIR/reload-nginx.sh"; then
+  cp -a "$saved" "$renewal"
+  die "certbot reconfigure 失败。已恢复原来的 renewal 配置。没有写入 http-01，也没有重签生产证书。"
+fi
 
 if ! certbot renew --cert-name imperfectnotes.com --dry-run --non-interactive; then
   cp -a "$saved" "$renewal"
-  die "certbot renew --dry-run 失败。已把续签配置改回。证书仍不会自动续签。"
+  die "certbot renew --dry-run 失败。已把续签配置改回。没有写入 http-01。"
+fi
+
+cert_after="$(sha256sum "$live_cert" | awk '{print $1}')"
+if [ "$cert_before" != "$cert_after" ]; then
+  cp -a "$saved" "$renewal"
+  die "生产证书文件变了。已恢复 renewal 配置。不要把这次结果当成续签切换完成。"
 fi
 
 mkdir -p "$LIB_DIR"

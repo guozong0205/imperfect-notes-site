@@ -165,7 +165,7 @@ bash 60-cutover-check.sh after ../../site/manifest.sha256
 
 `after` 还要求证书签发者是 Let's Encrypt，并且外部 `ep17.mp3` 的范围请求仍是 206。
 
-阶段 70 是续签的分界。A 和 www 都已经指向 `39.96.210.138`，并且安全组放行了 80 之后才跑。它先从公网读取自己写下的探测文件；失败就不动 renewal 配置。成功后把 authenticator 改成 webroot，再跑 `certbot renew --dry-run`。演练失败会把 renewal 文件拷回去。演练成功才写入 `/var/lib/imperfectnotes/renewal-mode` 为 `http-01`，并启用 `certbot.timer`。部署钩子只重载 `imperfectnotes-static`。
+阶段 70 是续签的分界。公网探针通过之后，`certbot reconfigure` 必须带 `--preferred-challenges http`。原来的 manual 配置把 `pref_challs` 记成 `dns-01`，只改 webroot 会报 preferred challenges 不被插件支持。`reconfigure` 先对测试服务器做 dry-run，成功才改 renewal 配置，不替换生产证书。之后还要单独 `certbot renew --dry-run` 成功，才写入 `http-01`。演练失败会把 renewal 文件拷回去。
 
 ```bash
 IMPERFECTNOTES_ENABLE_HTTP01_RENEW=yes bash 70-enable-http01-renew.sh

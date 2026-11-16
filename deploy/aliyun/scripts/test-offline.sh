@@ -187,7 +187,40 @@ grep -q 'ExecStart=/bin/bash /etc/imperfectnotes/cert-watch.sh' \
 [ ! -x "$nox/scripts/80-install-cert-watch.sh" ]
 grep -q 'bash "$ETC_DIR/cert-watch.sh"' "$REPO/deploy/aliyun/scripts/70-enable-http01-renew.sh"
 grep -q 'deploy-hook "/bin/bash $ETC_DIR/reload-nginx.sh"' "$REPO/deploy/aliyun/scripts/70-enable-http01-renew.sh"
+grep -q -- '--preferred-challenges http' "$REPO/deploy/aliyun/scripts/70-enable-http01-renew.sh"
 note "无执行位发行包里，bash 调用阶段80成功；直接执行返回126。"
+
+note "=== certbot 2.9.0：reconfigure 必须覆盖 dns-01 偏好 ==="
+python3 - <<'PY'
+import tempfile
+from pathlib import Path
+from certbot._internal.cli import prepare_and_parse_args
+from certbot._internal.plugins.disco import PluginsRegistry
+from certbot._internal.renewal import restore_required_config_elements
+
+webroot = Path(tempfile.mkdtemp(prefix="imperfectnotes-webroot-"))
+plugins = PluginsRegistry.find_all()
+base = [
+    "--authenticator", "webroot",
+    "--webroot-path", str(webroot),
+    "--non-interactive",
+]
+with_http = prepare_and_parse_args(plugins, ["reconfigure", "--cert-name", "imperfectnotes.com", "--preferred-challenges", "http", *base])
+assert with_http.verb == "reconfigure"
+assert with_http.pref_challs == ["http-01"], with_http.pref_challs
+assert with_http.set_by_user("pref_challs")
+assert with_http.set_by_user("authenticator")
+restore_required_config_elements(with_http, {"pref_challs": "dns-01", "authenticator": "manual"})
+assert with_http.pref_challs == ["http-01"]
+assert with_http.authenticator == "webroot"
+
+without = prepare_and_parse_args(plugins, ["reconfigure", "--cert-name", "imperfectnotes.com", *base])
+assert without.pref_challs == []
+assert not without.set_by_user("pref_challs")
+restore_required_config_elements(without, {"pref_challs": "dns-01", "authenticator": "manual"})
+assert without.pref_challs == ["dns-01"]
+print("certbot_reconfigure_http_override_ok")
+PY
 
 bad_tar="$OUT/bad.tar.gz"
 mkdir -p "$OUT/bad/nested"
