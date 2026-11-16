@@ -97,6 +97,8 @@ IMPERFECTNOTES_ISSUE_CERT=yes \
   bash 40-issue-cert-dns01.sh
 ```
 
+阶段 40 用 `bash` 调用阶段 80，发行包里的脚本没有执行位也能装上证书监视。已经用 `bash 80-install-cert-watch.sh` 装过的机器不用再跑阶段 40，也不用重签。
+
 终端里要先输入 `issue`。certbot 随后给出 TXT。只在 Cloudflare 新增：
 
 ```

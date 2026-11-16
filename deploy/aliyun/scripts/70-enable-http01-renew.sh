@@ -46,7 +46,7 @@ certbot reconfigure \
   --cert-name imperfectnotes.com \
   --authenticator webroot \
   --webroot-path "$webroot" \
-  --deploy-hook "$ETC_DIR/reload-nginx.sh"
+  --deploy-hook "/bin/bash $ETC_DIR/reload-nginx.sh"
 
 if ! certbot renew --cert-name imperfectnotes.com --dry-run --non-interactive; then
   cp -a "$saved" "$renewal"
@@ -57,4 +57,4 @@ mkdir -p "$LIB_DIR"
 printf '%s\n' "http-01" > "$LIB_DIR/renewal-mode"
 systemctl enable --now certbot.timer
 note "HTTP-01 演练成功，certbot.timer 已启用。这是避免 90 天后过期的必要步骤。"
-"$ETC_DIR/cert-watch.sh" || die "cert-watch 仍报续签未就绪。"
+bash "$ETC_DIR/cert-watch.sh" || die "cert-watch 仍报续签未就绪。"

@@ -18,7 +18,7 @@ cp "$UNIT_SRC/imperfectnotes-cert-watch.service" "$UNIT_DIR/imperfectnotes-cert-
 install_unit "$UNIT_SRC/imperfectnotes-cert-watch.timer"
 if [ -z "$SYSROOT" ]; then
   systemctl enable --now imperfectnotes-cert-watch.timer
-  "$ETC_DIR/cert-watch.sh" || note "证书监视已安装。当前状态是警告，这在阶段 70 之前是预期的。"
+  bash "$ETC_DIR/cert-watch.sh" || note "证书监视已安装。当前状态是警告，这在阶段 70 之前是预期的。"
 else
   note "SYSROOT 演练：未启用 timer。"
 fi

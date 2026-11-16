@@ -23,8 +23,8 @@ cleanup() {
 trap cleanup EXIT
 
 note "=== 构建发布包两次，确认哈希稳定 ==="
-"$SCRIPT_DIR/build-release.sh" "$OUT/a"
-"$SCRIPT_DIR/build-release.sh" "$OUT/b"
+bash "$SCRIPT_DIR/build-release.sh" "$OUT/a"
+bash "$SCRIPT_DIR/build-release.sh" "$OUT/b"
 cmp "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz" "$OUT/b/imperfectnotes-site-${PINNED_SHORT}.tar.gz"
 note "压缩包可重复构建。"
 
@@ -64,13 +64,30 @@ if bad:
     print("\n".join(bad))
     sys.exit(1)
 print("forbidden_command_scan_ok")
+direct = []
+script_cmd = re.compile(
+    r"""(?:^|[;&|(])\s*(?:[A-Za-z_][A-Za-z0-9_]*=\S+\s+)*"?\$[A-Za-z_][A-Za-z0-9_]*/[^"\s]+\.sh"?(?:\s|$)"""
+)
+for path in sorted(root.glob("*.sh")):
+    if path.name == "test-offline.sh":
+        continue
+    for lineno, raw in enumerate(path.read_text().splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if script_cmd.search(line):
+            direct.append(f"{path.name}:{lineno}: {line}")
+if direct:
+    print("\n".join(direct))
+    sys.exit(1)
+print("script_exec_uses_bash")
 PY
 
 note "=== 演练安装：幂等、拒绝覆盖、拒绝路径穿越 ==="
 export IMPERFECTNOTES_SYSROOT="$SYS"
 export IMPERFECTNOTES_INSTALL_RELEASE=yes
 note "阶段10 绝对路径安装"
-"$SCRIPT_DIR/10-install-release.sh" \
+bash "$SCRIPT_DIR/10-install-release.sh" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256" \
   "$OUT/a/manifest.sha256" \
@@ -81,14 +98,14 @@ abs_index="$SYS/var/www/imperfectnotes/releases/${PINNED_SHORT}/index.html"
 expected_index="$(awk '$2=="index.html" {print $1}' "$OUT/a/manifest.sha256")"
 actual_index="$(sha256sum "$abs_index" | awk '{print $1}')"
 [ "$expected_index" = "$actual_index" ] || die "绝对路径安装后的首页与清单不一致。"
-"$SCRIPT_DIR/10-install-release.sh" \
+bash "$SCRIPT_DIR/10-install-release.sh" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256" \
   "$OUT/a/manifest.sha256" \
   "$OUT/a/release-commit.txt"
 echo extra >> "$SYS/var/www/imperfectnotes/releases/${PINNED_SHORT}/index.html"
 set +e
-"$SCRIPT_DIR/10-install-release.sh" \
+bash "$SCRIPT_DIR/10-install-release.sh" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256" \
   "$OUT/a/manifest.sha256" \
@@ -109,7 +126,7 @@ cp "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz" \
 (
   cd "$rel_bundle/deploy/scripts"
   IMPERFECTNOTES_SYSROOT="$OUT/relsys" \
-    "$SCRIPT_DIR/10-install-release.sh" \
+    bash "$SCRIPT_DIR/10-install-release.sh" \
     ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz \
     ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256 \
     ../../site/manifest.sha256 \
@@ -123,7 +140,7 @@ rel_actual="$(sha256sum "$rel_index" | awk '{print $1}')"
 (
   cd "$rel_bundle/deploy/scripts"
   IMPERFECTNOTES_SYSROOT="$OUT/relsys" \
-    "$SCRIPT_DIR/10-install-release.sh" \
+    bash "$SCRIPT_DIR/10-install-release.sh" \
     ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz \
     ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256 \
     ../../site/manifest.sha256 \
@@ -134,7 +151,7 @@ set +e
 (
   cd "$rel_bundle/deploy/scripts"
   IMPERFECTNOTES_SYSROOT="$OUT/relsys-missing" \
-    "$SCRIPT_DIR/10-install-release.sh" \
+    bash "$SCRIPT_DIR/10-install-release.sh" \
     ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz \
     ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256 \
     ../../site/missing-manifest.sha256 \
@@ -146,6 +163,32 @@ set -e
 [ ! -d "$OUT/relsys-missing/var/www/imperfectnotes/releases" ] || die "失败的相对路径安装写出了 release。"
 note "相对路径安装通过，缺失清单在写入前被拒绝。"
 
+note "=== 无执行位发行包：阶段40用 bash 调用阶段80 ==="
+nox="$OUT/nox"
+mkdir -p "$nox"
+tar -C "$REPO/deploy/aliyun" -cf - scripts systemd | tar -C "$nox" -xf -
+find "$nox" -type d -exec chmod 755 {} +
+find "$nox" -name '*.sh' -exec chmod a-x {} +
+[ ! -x "$nox/scripts/80-install-cert-watch.sh" ]
+set +e
+"$nox/scripts/80-install-cert-watch.sh"
+nox_direct=$?
+set -e
+[ "$nox_direct" -eq 126 ] || die "无执行位的阶段80直接执行应返回126，实际 $nox_direct。"
+grep -q 'bash "$SCRIPT_DIR/80-install-cert-watch.sh"' "$REPO/deploy/aliyun/scripts/40-issue-cert-dns01.sh"
+IMPERFECTNOTES_SYSROOT="$OUT/watchsys" \
+IMPERFECTNOTES_INSTALL_CERT_WATCH=yes \
+  bash "$nox/scripts/80-install-cert-watch.sh" | tee "$OUT/nox-80.log"
+grep -q 'SYSROOT 演练：未启用 timer' "$OUT/nox-80.log"
+[ -f "$OUT/watchsys/etc/imperfectnotes/cert-watch.sh" ]
+[ -x "$OUT/watchsys/etc/imperfectnotes/cert-watch.sh" ]
+grep -q 'ExecStart=/bin/bash /etc/imperfectnotes/cert-watch.sh' \
+  "$OUT/watchsys/etc/systemd/system/imperfectnotes-cert-watch.service"
+[ ! -x "$nox/scripts/80-install-cert-watch.sh" ]
+grep -q 'bash "$ETC_DIR/cert-watch.sh"' "$REPO/deploy/aliyun/scripts/70-enable-http01-renew.sh"
+grep -q 'deploy-hook "/bin/bash $ETC_DIR/reload-nginx.sh"' "$REPO/deploy/aliyun/scripts/70-enable-http01-renew.sh"
+note "无执行位发行包里，bash 调用阶段80成功；直接执行返回126。"
+
 bad_tar="$OUT/bad.tar.gz"
 mkdir -p "$OUT/bad/nested"
 echo x > "$OUT/bad/nested/file"
@@ -156,21 +199,21 @@ echo "deadbeef  bad.tar.gz" > "$OUT/bad.sha256"
 # member check is what rejects the archive.
 sha256sum "$bad_tar" | awk '{print $1"  bad.tar.gz"}' > "$OUT/bad.sha256"
 set +e
-"$SCRIPT_DIR/10-install-release.sh" "$bad_tar" "$OUT/bad.sha256" "$OUT/a/manifest.sha256" "$OUT/bad-commit.txt"
+bash "$SCRIPT_DIR/10-install-release.sh" "$bad_tar" "$OUT/bad.sha256" "$OUT/a/manifest.sha256" "$OUT/bad-commit.txt"
 bad_status=$?
 set -e
 [ "$bad_status" -ne 0 ] || die "危险压缩包没有被拒绝。"
 note "危险压缩包被拒绝。"
 
 export IMPERFECTNOTES_ENABLE_LOCALHOST=yes
-"$SCRIPT_DIR/20-enable-localhost.sh"
+bash "$SCRIPT_DIR/20-enable-localhost.sh"
 [ -f "$SYS/etc/imperfectnotes/nginx.conf" ]
 grep -q '127.0.0.1:8870' "$SYS/etc/imperfectnotes/nginx.conf"
 if grep -E 'listen[[:space:]]+80([^0-9]|$)|listen[[:space:]]+443([^0-9]|$)' "$SYS/etc/imperfectnotes/nginx.conf"; then
   die "演练后的活动配置监听了公网端口。"
 fi
 export IMPERFECTNOTES_ROLLBACK=localhost
-"$SCRIPT_DIR/90-rollback.sh"
+bash "$SCRIPT_DIR/90-rollback.sh"
 unset IMPERFECTNOTES_SYSROOT IMPERFECTNOTES_INSTALL_RELEASE IMPERFECTNOTES_ENABLE_LOCALHOST IMPERFECTNOTES_ROLLBACK
 
 note "=== 用真实 nginx 验收 localhost 配置 ==="
@@ -210,7 +253,7 @@ chmod 755 "$OUT" "$OUT/tree" "$NGX"
 chmod -R a+rX "$OUT/tree" "$NGX/etc" "$NGX/lib" "$NGX/log"
 sudo nginx -t -c "$NGX/local.conf"
 sudo nginx -c "$NGX/local.conf"
-"$SCRIPT_DIR/30-accept-localhost.sh"
+bash "$SCRIPT_DIR/30-accept-localhost.sh"
 
 note "=== 公网配置在高位端口上的跳转、证书和 HTTP-01 目录 ==="
 sudo openssl req -x509 -newkey rsa:2048 -keyout "$NGX/key.pem" -out "$NGX/cert.pem" -days 2 -nodes \
@@ -296,5 +339,12 @@ for name in paths:
     print(f"live_match {name} {ctype}")
 PY
 
-"$SCRIPT_DIR/60-cutover-check.sh" before "$OUT/a/manifest.sha256"
+# Read-only. Follow whichever DNS state is already live; do not change records.
+if dig +short "$APEX_HOST" A | grep -qx "$PUBLIC_IP"; then
+  note "公网 A 已是 $PUBLIC_IP，只读执行 after 验收。"
+  bash "$SCRIPT_DIR/60-cutover-check.sh" after "$OUT/a/manifest.sha256"
+else
+  note "公网仍指向 GitHub Pages，只读执行 before 验收。"
+  bash "$SCRIPT_DIR/60-cutover-check.sh" before "$OUT/a/manifest.sha256"
+fi
 note "离线验收完成。没有连接 ECS，没有改 DNS，没有签发正式证书。"

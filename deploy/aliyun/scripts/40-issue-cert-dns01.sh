@@ -85,4 +85,5 @@ note "证书目录：/etc/letsencrypt/live/imperfectnotes.com/"
 note "请现在删除 Cloudflare 上的 _acme-challenge TXT。不要改 A、CNAME、MX。"
 openssl x509 -in /etc/letsencrypt/live/imperfectnotes.com/cert.pem -noout -subject -issuer -dates
 note "这一步没有打开 80/443，也没有重载网站。"
-IMPERFECTNOTES_INSTALL_CERT_WATCH=yes "$SCRIPT_DIR/80-install-cert-watch.sh"
+# The published bundle stores shell scripts without the execute bit.
+IMPERFECTNOTES_INSTALL_CERT_WATCH=yes bash "$SCRIPT_DIR/80-install-cert-watch.sh"

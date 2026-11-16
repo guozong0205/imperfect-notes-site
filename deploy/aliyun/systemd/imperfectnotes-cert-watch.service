@@ -4,4 +4,4 @@ ConditionPathExists=/etc/imperfectnotes/cert-watch.sh
 
 [Service]
 Type=oneshot
-ExecStart=/etc/imperfectnotes/cert-watch.sh
+ExecStart=/bin/bash /etc/imperfectnotes/cert-watch.sh
