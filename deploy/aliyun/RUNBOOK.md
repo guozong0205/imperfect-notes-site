@@ -70,7 +70,7 @@ bash 00-preflight.sh
 
 预期里就包括：系统 nginx 是 masked/inactive，80/443 没人听，`/etc/letsencrypt/live` 不存在，8765–8768 上的旧进程还在。脚本不会结束它们。
 
-阶段 10，安装这个提交。目标目录已存在且内容不同时会停，不会覆盖。
+阶段 10，安装这个提交。目标目录已存在且内容不同时会停，不会覆盖。在 `deploy/scripts` 下，下面的相对路径和绝对路径都可以。脚本会先把四个参数收成绝对路径，再进入临时目录校验清单。
 
 ```bash
 IMPERFECTNOTES_INSTALL_RELEASE=yes bash 10-install-release.sh \

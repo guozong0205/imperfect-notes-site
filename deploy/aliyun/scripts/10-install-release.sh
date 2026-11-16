@@ -15,10 +15,12 @@ if [ "$#" -ne 4 ]; then
   die "用法：IMPERFECTNOTES_INSTALL_RELEASE=yes $0 TARBALL SHA256 MANIFEST COMMITFILE"
 fi
 
-tarball="$1"
-shafile="$2"
-manifest="$3"
-commitfile="$4"
+# Canonicalize before the extract directory becomes the working directory.
+# sha256sum -c reads its checklist path from that directory.
+tarball="$(absolute_path "$1")"
+shafile="$(absolute_path "$2")"
+manifest="$(absolute_path "$3")"
+commitfile="$(absolute_path "$4")"
 [ -f "$tarball" ] && [ -f "$shafile" ] && [ -f "$manifest" ] && [ -f "$commitfile" ] || die "发布文件不完整。"
 
 got_commit="$(tr -d '[:space:]' < "$commitfile")"

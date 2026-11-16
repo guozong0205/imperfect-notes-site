@@ -61,6 +61,19 @@ note() {
   echo "$*"
 }
 
+# Resolve a caller-supplied path before any later cd. Relative paths are
+# based on the current directory, then stored as a physical absolute path.
+absolute_path() {
+  local input="$1"
+  local dir name
+  if [ ! -e "$input" ]; then
+    die "文件不存在：$input"
+  fi
+  dir="$(cd "$(dirname -- "$input")" && pwd -P)"
+  name="$(basename -- "$input")"
+  printf '%s/%s\n' "$dir" "$name"
+}
+
 require_root() {
   if [ -n "$SYSROOT" ]; then
     return 0

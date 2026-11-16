@@ -69,11 +69,18 @@ PY
 note "=== 演练安装：幂等、拒绝覆盖、拒绝路径穿越 ==="
 export IMPERFECTNOTES_SYSROOT="$SYS"
 export IMPERFECTNOTES_INSTALL_RELEASE=yes
+note "阶段10 绝对路径安装"
 "$SCRIPT_DIR/10-install-release.sh" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256" \
   "$OUT/a/manifest.sha256" \
-  "$OUT/a/release-commit.txt"
+  "$OUT/a/release-commit.txt" | tee "$OUT/abs-install.log"
+grep -q '已安装' "$OUT/abs-install.log"
+abs_index="$SYS/var/www/imperfectnotes/releases/${PINNED_SHORT}/index.html"
+[ -f "$abs_index" ]
+expected_index="$(awk '$2=="index.html" {print $1}' "$OUT/a/manifest.sha256")"
+actual_index="$(sha256sum "$abs_index" | awk '{print $1}')"
+[ "$expected_index" = "$actual_index" ] || die "绝对路径安装后的首页与清单不一致。"
 "$SCRIPT_DIR/10-install-release.sh" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz" \
   "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256" \
@@ -90,6 +97,54 @@ overwrite_status=$?
 set -e
 [ "$overwrite_status" -ne 0 ] || die "覆盖不同内容时没有拒绝。"
 note "覆盖冲突被拒绝。"
+
+note "阶段10 相对路径安装（与运行文档相同的 ../../site）"
+rel_bundle="$OUT/rel-bundle"
+mkdir -p "$rel_bundle/deploy/scripts" "$rel_bundle/site"
+cp "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz" \
+  "$OUT/a/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256" \
+  "$OUT/a/manifest.sha256" \
+  "$OUT/a/release-commit.txt" \
+  "$rel_bundle/site/"
+(
+  cd "$rel_bundle/deploy/scripts"
+  IMPERFECTNOTES_SYSROOT="$OUT/relsys" \
+    "$SCRIPT_DIR/10-install-release.sh" \
+    ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz \
+    ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256 \
+    ../../site/manifest.sha256 \
+    ../../site/release-commit.txt
+) | tee "$OUT/rel-install.log"
+grep -q '已安装' "$OUT/rel-install.log"
+rel_index="$OUT/relsys/var/www/imperfectnotes/releases/${PINNED_SHORT}/index.html"
+[ -f "$rel_index" ]
+rel_actual="$(sha256sum "$rel_index" | awk '{print $1}')"
+[ "$expected_index" = "$rel_actual" ] || die "相对路径安装后的首页与清单不一致。"
+(
+  cd "$rel_bundle/deploy/scripts"
+  IMPERFECTNOTES_SYSROOT="$OUT/relsys" \
+    "$SCRIPT_DIR/10-install-release.sh" \
+    ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz \
+    ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256 \
+    ../../site/manifest.sha256 \
+    ../../site/release-commit.txt
+) | tee "$OUT/rel-install-again.log"
+grep -q '内容一致，不覆盖' "$OUT/rel-install-again.log"
+set +e
+(
+  cd "$rel_bundle/deploy/scripts"
+  IMPERFECTNOTES_SYSROOT="$OUT/relsys-missing" \
+    "$SCRIPT_DIR/10-install-release.sh" \
+    ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz \
+    ../../site/imperfectnotes-site-${PINNED_SHORT}.tar.gz.sha256 \
+    ../../site/missing-manifest.sha256 \
+    ../../site/release-commit.txt
+)
+missing_status=$?
+set -e
+[ "$missing_status" -ne 0 ] || die "不存在的相对清单没有被拒绝。"
+[ ! -d "$OUT/relsys-missing/var/www/imperfectnotes/releases" ] || die "失败的相对路径安装写出了 release。"
+note "相对路径安装通过，缺失清单在写入前被拒绝。"
 
 bad_tar="$OUT/bad.tar.gz"
 mkdir -p "$OUT/bad/nested"
