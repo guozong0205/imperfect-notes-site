@@ -1,0 +1,14 @@
+/var/log/imperfectnotes/*.log {
+  weekly
+  rotate 8
+  compress
+  delaycompress
+  missingok
+  notifempty
+  sharedscripts
+  postrotate
+    if [ -s /run/imperfectnotes-nginx.pid ]; then
+      kill -USR1 "$(cat /run/imperfectnotes-nginx.pid)"
+    fi
+  endscript
+}

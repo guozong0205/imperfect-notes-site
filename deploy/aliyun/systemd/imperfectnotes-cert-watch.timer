@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Imperfect Notes certificate expiry watch
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=1h
+
+[Install]
+WantedBy=timers.target

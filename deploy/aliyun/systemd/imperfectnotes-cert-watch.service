@@ -1,0 +1,7 @@
+[Unit]
+Description=Warn if the Imperfect Notes certificate cannot auto-renew
+ConditionPathExists=/etc/imperfectnotes/cert-watch.sh
+
+[Service]
+Type=oneshot
+ExecStart=/etc/imperfectnotes/cert-watch.sh
